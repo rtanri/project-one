@@ -5,7 +5,35 @@
         margin: 30px auto;
 }
 
+/* ========== Canvas CSS ========== */
+
 #game-screen{
-        background-color: #eaeaea;
-        border: 1px solid black;
+        background:url(./assets/background.png) ;
+        /* border: 1px dashed grey; */
+}
+
+
+/* ========== Status Board and Tower Button CSS ========== */
+
+#button-list{
+        margin: 30px auto;
+        max-width: 700px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+}
+
+#status-board{
+        font-size: 24px;
+        font-weight: 400;
+        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        margin-left: 100px;
+}
+
+.towerButton{
+        padding: 0 20px;
+        font-size: 20px;
+        margin-right: 20px;
+        height: 50px;
 }
