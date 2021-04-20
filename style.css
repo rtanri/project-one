@@ -10,6 +10,34 @@
 #game-screen{
         background:url(./assets/background.png) ;
         /* border: 1px dashed grey; */
+        margin: 10px auto;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        align-content: flex-start;
+}
+
+/* dummy div test outside canvas */
+#testDiv{
+        margin: 10px auto;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        width: 700px;
+        height: 300px;
+        align-content: flex-start;
+}
+
+.towerGround{
+        width: 116.67px;
+        height: 90px;
+        z-index: 9;
+        background-color:#eaeaea;
+        border: 1px dashed black;
+}
+
+.towerGround:hover{
+        background-color: darkgoldenrod;
 }
 
 

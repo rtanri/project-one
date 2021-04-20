@@ -7,8 +7,15 @@
 </head>
 <body>
         <div id="main-window">
-                <h1>Plant vs Zombie</h1>
-                <canvas id="game-screen" width="700" height="300"></canvas>
+                <h1>2D Tower Defence</h1>
+                <canvas id="game-screen" width="700" height="300">
+                        <div class="towerGround"></div>
+                        <div class="towerGround"></div>
+                        <div class="towerGround"></div>
+                        <div class="towerGround"></div>
+                        <div class="towerGround"></div>
+                        <div class="towerGround"></div>
+                </canvas>
         </div>
 
         <div id="button-list">
@@ -16,7 +23,23 @@
                 <button type="button" class='towerButton'>Tower 2</button>
                 <p id="status-board">Gold:  <span id="gold">100</span></p>
         </div>
+
+        <!-- testing DIV outside the canvas -->
+        <div id="testDiv">
+                <div class="towerGround"></div>
+                <div class="towerGround"></div>
+                <div class="towerGround"></div>
+                <div class="towerGround"></div>
+                <div class="towerGround"></div>
+                <div class="towerGround"></div>
+        </div>
+
         
         <script src='./main.js' ></script>
 </body>
 </html>
+
+<!-- Pseudo code in HTML
+1. Create 2 row square <div> in left side of canvas. Once it got mouse hover, you will see translucent color
+
+-->
