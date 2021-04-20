@@ -1,3 +1,7 @@
+body{
+        min-width: 750px;
+}
+
 #main-window{
         display: flex;
         flex-direction: column;
@@ -9,34 +13,40 @@
 
 #game-screen{
         background:url(./assets/background.png) ;
+        background-repeat: no-repeat;
         /* border: 1px dashed grey; */
-        margin: 10px auto;
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-        align-content: flex-start;
-}
-
-/* dummy div test outside canvas */
-#testDiv{
-        margin: 10px auto;
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
         width: 700px;
         height: 300px;
-        align-content: flex-start;
+
+        margin: 10px auto;
+        padding-top: 10px;
+        position: relative;
+
 }
+
+#flex-screen{
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        height: 300px;
+}
+
 
 .towerGround{
-        width: 116.67px;
-        height: 90px;
-        z-index: 9;
-        background-color:#eaeaea;
-        border: 1px dashed black;
+        width: 116px;
+        height: 96px;
+        /* text-align: right; */
+        /* border: 1px dashed black; */
 }
 
-.towerGround:hover{
+.actived{
+        opacity: 0.2;
+        background-color:#eaeaea;
+}
+
+.actived:hover{
+        opacity: 0.8;
         background-color: darkgoldenrod;
 }
 
@@ -64,4 +74,44 @@
         font-size: 20px;
         margin-right: 20px;
         height: 50px;
+}
+
+
+/* Enemy CSS */
+
+#enemy1{
+        height: 80px;
+        position: absolute;
+        right: 0;
+}
+
+
+
+/* Testing Ground CSS */
+
+#walking-test{
+        width: 700px;
+        height: 300px;
+        position: relative;
+        background: yellow;
+}
+
+
+#test-label{
+        text-align: center;
+        font-size: 30px;
+        opacity: 0.4;
+        
+}
+
+#enemy2{
+        /* width: 50px; */
+        height: 80px;
+        margin-top: 10px;
+        position: absolute;
+        right:0;
+}
+
+#move-button{
+        background-color: chocolate;
 }

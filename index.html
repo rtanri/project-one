@@ -7,34 +7,45 @@
 </head>
 <body>
         <div id="main-window">
-                <h1>2D Tower Defence</h1>
-                <canvas id="game-screen" width="700" height="300">
-                        <div class="towerGround"></div>
-                        <div class="towerGround"></div>
-                        <div class="towerGround"></div>
-                        <div class="towerGround"></div>
-                        <div class="towerGround"></div>
-                        <div class="towerGround"></div>
-                </canvas>
+                <h1>2D Tower Defense</h1>
+                <!-- <canvas id="game-screen" width="700" height="300"></canvas> -->
+                <div id="game-screen">
+                        <div id="flex-screen">
+                                <div class="towerGround"></div>
+                                <div class="towerGround"></div>
+                                <div class="towerGround"></div>
+                                <div class="towerGround"></div>
+                                <div class="towerGround"></div>
+                                <div class="towerGround"></div>
+                                <div class="towerGround"></div>
+                                <div class="towerGround"></div>
+                                <div class="towerGround"></div>
+                                <div class="towerGround"></div>
+                                <div class="towerGround"></div>
+                                <div class="towerGround"></div>
+                                <div class="towerGround"></div>
+                                <div class="towerGround"></div>
+                                <div class="towerGround"></div>
+                                <div class="towerGround" id="spawnTop"></div>
+                                <div class="towerGround" id="spawnMiddle"></div>
+                                <div class="towerGround" id="spawnBottom"></div>
+                        </div>
+                </div>
+                <div id="walking-test">
+                        <span id="test-label">Testing Ground</span>
+                </div>
         </div>
+
 
         <div id="button-list">
-                <button type="button" class='towerButton'>Tower 1</button>
-                <button type="button" class='towerButton'>Tower 2</button>
+                <button type="button" id="first-tower-button" class='towerButton'>Tower 1</button>
+                
+                <button type="button" id="second-tower-button"class='towerButton'>Tower 2</button>
+                
+                <button type="button" id="move-button" class='towerButton' onclick="myMove()">Move</button>
+
                 <p id="status-board">Gold:  <span id="gold">100</span></p>
         </div>
-
-        <!-- testing DIV outside the canvas -->
-        <div id="testDiv">
-                <div class="towerGround"></div>
-                <div class="towerGround"></div>
-                <div class="towerGround"></div>
-                <div class="towerGround"></div>
-                <div class="towerGround"></div>
-                <div class="towerGround"></div>
-        </div>
-
-        
         <script src='./main.js' ></script>
 </body>
 </html>
