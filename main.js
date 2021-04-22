@@ -58,7 +58,15 @@ let apple = new BigTower("Apple", 5, 45)
 class Enemy {
         name = ""
         health = 10
+        sprite = "./assets/job-seeker.gif"
+        position = -30
 
+        createEnemy(location) {
+                let dummyEnemy1 = document.createElement("img");
+                dummyEnemy1.setAttribute("src", this.sprite)
+                dummyEnemy1.setAttribute("id", "enemy1")
+                location.appendChild(dummyEnemy1)
+        }
 
         move() {
                 let speed = 0;
@@ -84,20 +92,18 @@ class Enemy {
         }
 }
 // create 1 job seeker
-let kevin = new Enemy("Kevin")
+let student = new Enemy("Kevin")
+
 
 
 // 2. test to summon the object in canvas in window.onload. if success, hide it first
 let spawnFromTop = document.getElementById("spawnTop")
+let spawnFromMiddle = document.getElementById("spawnMiddle")
+let spawnFromBottom = document.getElementById("spawnBottom")
 
-// Test moving object within layered <div>, dummyEnemy1 parents is #game-screen
-let dummyEnemy1 = document.createElement("img");
-dummyEnemy1.setAttribute("src", "./assets/job-seeker.gif")
-dummyEnemy1.setAttribute("id", "enemy1")
-spawnFromTop.appendChild(dummyEnemy1)
-
-
-
+student.createEnemy(spawnFromTop)
+student.createEnemy(spawnFromMiddle)
+student.createEnemy(spawnFromBottom)
 
 
 
