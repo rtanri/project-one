@@ -62,48 +62,54 @@ class Enemy {
         position = -30
 
         createEnemy(location) {
-                let dummyEnemy1 = document.createElement("img");
-                dummyEnemy1.setAttribute("src", this.sprite)
-                dummyEnemy1.setAttribute("id", "enemy1")
-                location.appendChild(dummyEnemy1)
-        }
+                let enemyCharacter = document.createElement("img");
+                enemyCharacter.setAttribute("src", this.sprite)
+                enemyCharacter.setAttribute("class", "enemy-char")
+                location.appendChild(enemyCharacter)
 
-        move() {
                 let speed = 0;
-                let selectedEnemy = document.getElementById("enemy1");
                 let position = -30;
                 clearInterval(speed);
-                speed = setInterval(frame, 8);
+                speed = setInterval(frame, 5);
 
                 function frame() {
                         if (position == 670) {
                                 clearInterval(speed);
-                                selectedEnemy.remove()
+                                enemyCharacter.remove()
                                 // add some CSS blink effect, remove gold, decrease life 
                         } else {
                                 position++;
-                                selectedEnemy.style.right = position + 'px';
+                                enemyCharacter.style.right = position + 'px';
                         }
                 }
         }
-
         constructor(name) {
                 this.name = name
         }
 }
-// create 1 job seeker
-let student = new Enemy("Kevin")
 
 
 
-// 2. test to summon the object in canvas in window.onload. if success, hide it first
-let spawnFromTop = document.getElementById("spawnTop")
-let spawnFromMiddle = document.getElementById("spawnMiddle")
-let spawnFromBottom = document.getElementById("spawnBottom")
+// 2. test to summon enemies in random row, then use interval to summon in different timing
 
-student.createEnemy(spawnFromTop)
-student.createEnemy(spawnFromMiddle)
-student.createEnemy(spawnFromBottom)
+// Create spawing locations and randomizer
+let fromTop = document.getElementById("spawnTop")
+let fromMiddle = document.getElementById("spawnMiddle")
+let fromBottom = document.getElementById("spawnBottom")
+let spawnLocation = [fromTop, fromMiddle, fromBottom]
+
+const randomRow = (inputArray) => {
+        return inputArray[Math.floor(Math.random() * inputArray.length)]
+}
+
+// try make 2 enemy
+for (let i = 0; i < 2; i++) {
+        // create 1 job seeker
+        let student = new Enemy("Normal Student")
+        student.createEnemy(randomRow(spawnLocation))
+        // student.move() //---> delete this method because we move .move() inside method .createEnemy
+}
+
 
 
 
@@ -133,30 +139,30 @@ student.createEnemy(spawnFromBottom)
 /* ========== Testing Ground Code ========== */
 // Test moving object within plain <div>
 
-let spawnWalkingTest = document.getElementById("walking-test")
+// let spawnWalkingTest = document.getElementById("walking-test")
 
-// create Test-Enemy
-let dummyEnemy2 = document.createElement("img");
-dummyEnemy2.setAttribute("src", "./assets/job-seeker.gif")
-dummyEnemy2.setAttribute("id", "test-enemy")
-// dummyEnemy2.setAttribute("class", "enemySizing")
-spawnWalkingTest.appendChild(dummyEnemy2)
+// // create Test-Enemy
+// let dummyEnemy2 = document.createElement("img");
+// dummyEnemy2.setAttribute("src", "./assets/job-seeker.gif")
+// dummyEnemy2.setAttribute("id", "test-enemy")
+// // dummyEnemy2.setAttribute("class", "enemySizing")
+// spawnWalkingTest.appendChild(dummyEnemy2)
 
-function testMove() {
-        let speed = 0;
-        let selectedEnemy = document.getElementById("test-enemy");
-        let position = -30;
-        clearInterval(speed);
-        speed = setInterval(frame, 5);
+// function testMove() {
+//         let speed = 0;
+//         let selectedEnemy = document.getElementById("test-enemy");
+//         let position = -30;
+//         clearInterval(speed);
+//         speed = setInterval(frame, 5);
 
-        function frame() {
-                if (position == 670) {
-                        clearInterval(speed);
-                        selectedEnemy.remove()
-                        // add some CSS blink effect, remove gold, decrease life 
-                } else {
-                        position++;
-                        selectedEnemy.style.right = position + 'px';
-                }
-        }
-}
+//         function frame() {
+//                 if (position == 670) {
+//                         clearInterval(speed);
+//                         selectedEnemy.remove()
+//                         // add some CSS blink effect, remove gold, decrease life 
+//                 } else {
+//                         position++;
+//                         selectedEnemy.style.right = position + 'px';
+//                 }
+//         }
+// }
