@@ -6,10 +6,13 @@ Game Objective:
 Player need to defeat all enemies and protect their safe zone (left side) by building 2 type of auto-attacking towers.
 
 
-# Project Progress:
+# Project Progress
 
 1. Create Initial Game Screen
 ![background](./assets/readme/initial-gamescreen.jpg)
 
 1. Test Summonning enemies in various spots and let them move to left direction
 ![background](./assets/readme/test-spawningAndMoving-enemy.jpg)
+
+1. Summon 5 enemies in random rows with time interval (triggred by "Enemy +5" button click)
+![background](./assets/readme/interval-5-enemy.jpg)

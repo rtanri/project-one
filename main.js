@@ -70,7 +70,7 @@ class Enemy {
                 let speed = 0;
                 let position = -30;
                 clearInterval(speed);
-                speed = setInterval(frame, 5);
+                speed = setInterval(frame, 35);
 
                 function frame() {
                         if (position == 670) {
@@ -98,18 +98,35 @@ let fromMiddle = document.getElementById("spawnMiddle")
 let fromBottom = document.getElementById("spawnBottom")
 let spawnLocation = [fromTop, fromMiddle, fromBottom]
 
-const randomRow = (inputArray) => {
+const randomValue = (inputArray) => {
         return inputArray[Math.floor(Math.random() * inputArray.length)]
 }
 
-// try make 2 enemy
-for (let i = 0; i < 2; i++) {
-        // create 1 job seeker
-        let student = new Enemy("Normal Student")
-        student.createEnemy(randomRow(spawnLocation))
-        // student.move() //---> delete this method because we move .move() inside method .createEnemy
+function summonEnemy(limit) {
+        console.log("enemy btn clicked")
+        let enemyCount = 0
+        var interval = setInterval(() => {
+
+                let student = new Enemy("Normal Student")
+                student.createEnemy(randomValue(spawnLocation))
+                console.log(student)
+                enemyCount += 1
+
+                if (enemyCount === limit) {
+                        clearInterval(interval);
+                }
+        }, 3000);
+        enemyCount = 0;
 }
 
+
+
+window.onload = function () {
+        const waveOne = () => summonEnemy(5)
+
+        let enemyButton = document.getElementById("send-enemy-button")
+        enemyButton.addEventListener("click", waveOne)
+}
 
 
 
