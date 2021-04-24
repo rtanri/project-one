@@ -38,42 +38,62 @@ class GameObject {
 
 
 class Enemy extends GameObject {
-        speed = 2
+        speed;
+        intervalSpeed = 500;
         health = 10
         className = "enemy-char"
+
 
         constructor(x, y, speed) {
                 // to pull the constructor from parents
                 super("./assets/job-seeker.gif", x, y)
                 this.speed = speed;
                 this.DOMElement.setAttribute("class", this.className)
+                this.DOMElement.style.left = setInterval(() => {
+                        if (this.x === 50) {
+                                clearInterval()
+                                this.intervalSpeed = 0
+                        } else {
+                                this.x -= this.speed
+                                this.DOMElement.style.left = this.x + "px"
+                                console.log(this.x)
+                        }
+                }, this.intervalSpeed)
         }
+
 }
-
-
 
 
 class Bullet extends GameObject {
-        speed = 3
-        className = "bulletDisplay"
+        speed;
+        className = "bulletDisplay";
+        intervalSpeed = 500;
+
 
         constructor(x, y, speed) {
                 super("./assets/bullet.png", x, y)
-                this.speed
+                this.speed = speed
                 this.DOMElement.setAttribute("class", this.className)
+                this.DOMElement.style.left = setInterval(() => {
+                        if (this.x === 700) {
+                                clearInterval()
+                                this.intervalSpeed = 0
+                        } else {
+                                this.x += this.speed
+                                this.DOMElement.style.left = this.x + "px"
+                                console.log(this.x)
+                        }
+                }, this.intervalSpeed)
         }
 }
-
-
-
 
 
 
 window.onload = function () {
-        const waveOne = () => summonEnemy(5)
+        // const waveOne = () => summonEnemy(5)
 
-        let enemyButton = document.getElementById("send-enemy-button")
-        enemyButton.addEventListener("click", waveOne)
+        // let enemyButton = document.getElementById("send-enemy-button")
+        // enemyButton.addEventListener("click", waveOne)
 
         // 1. Create Enemy Examples
         const enemyOne = new Enemy(700, 10, 10)
@@ -91,9 +111,9 @@ window.onload = function () {
 
 
         // 2. Create Bullet Examples
-        const bulletOne = new Bullet(50, 10, 3)
-        const bulletTwo = new Bullet(50, 110, 3)
-        const bulletThree = new Bullet(50, 210, 3)
+        const bulletOne = new Bullet(50, 10, 10)
+        const bulletTwo = new Bullet(50, 110, 10)
+        const bulletThree = new Bullet(50, 210, 10)
 
         allBullets.push(bulletOne)
         allBullets.push(bulletTwo)
@@ -105,10 +125,6 @@ window.onload = function () {
         }
 
 }
-
-
-
-
 /* ========== Code in Testing Ground ========== */
 let testingGround = document.getElementById("walking-test")
 
