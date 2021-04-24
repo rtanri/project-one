@@ -9,7 +9,7 @@ body{
         margin: 30px auto;
 }
 
-/* ========== Canvas CSS ========== */
+/* ========== Game Display CSS ========== */
 
 #game-screen{
         background:url(./assets/background.png) ;
@@ -51,6 +51,17 @@ body{
 }
 
 
+/* Tower and bullet */
+.bulletDisplay{
+        height: 30px;
+        width: 40px;
+        position: absolute;
+        margin-top: 20px;
+        left: 50px;
+}
+
+
+
 /* ========== Status Board and Tower Button CSS ========== */
 
 #button-list{
@@ -80,6 +91,7 @@ body{
 /* Enemy CSS */
 
 .enemy-char{
+        width: 44px;
         height: 80px;
         position: absolute;
         right: 0;
@@ -101,15 +113,11 @@ body{
         text-align: center;
         font-size: 30px;
         opacity: 0.4;
+        position: absolute;
+        top: 150px;
+        left: 200px;
 }
 
-#test-enemy{
-        /* width: 50px; */
-        height: 80px;
-        margin-top: 10px;
-        position: absolute;
-        right:0;
-}
 
 .testButton{
         background-color: chocolate;
@@ -118,3 +126,25 @@ body{
         margin-right: 20px;
         height: 50px;
 }
+
+
+/* Dimension */
+
+/* 
+
+GameScreen
+width: 700px;
+height: 310px;
+each-row: 100px;
+
+1. Enemy 
+width: 44px;
+height: 80px;
+
+2. Bullet
+width: 40px;
+height: 30px;
+
+
+
+*/

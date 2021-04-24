@@ -1,123 +1,99 @@
 console.log("JS Connected")
 
-// 1. Create object class type: tower, enemy, and bullet
-class Tower {
-        name = ""
-        shoot() {
-                console.log("throw bullet")
-        }
+// Create empty array for enemy, tower, bullet
+const allEnemies = []
+const allTowers = []
+const allBullets = []
 
-        constructor(name) {
-                this.name = name;
-        }
-}
-
-class SmallTower extends Tower {
-        shootingDamage = 2
-        price = 25
-
-        getDamage() {
-                return this.shootingDamage
-        }
-
-        printName() {
-                console.log("This is small tower")
-        }
-
-        constructor(name, shootingDamage, price) {
-                super(name)
-                this.price = price
-                this.shootingDamage = shootingDamage
-        }
-}
-// create Unilever as Small Tower
-let uniqlo = new SmallTower("Uniqlo", 2, 25)
-
-
-class BigTower extends Tower {
-        shootingDamage = 5
-        price = 45
-
-        getDamage() {
-                return this.shootingDamage
-        }
-
-        printName() {
-                console.log("This is big tower")
-        }
-
-        constructor(name, shootingDamage, price) {
-                super(name)
-                this.price = price
-                this.shootingDamage = shootingDamage
-        }
-}
-// create Apple as Big Tower
-let apple = new BigTower("Apple", 5, 45)
-
-class Enemy {
-        name = ""
-        health = 10
-        sprite = "./assets/job-seeker.gif"
-        position = -30
-
-        createEnemy(location) {
-                let enemyCharacter = document.createElement("img");
-                enemyCharacter.setAttribute("src", this.sprite)
-                enemyCharacter.setAttribute("class", "enemy-char")
-                location.appendChild(enemyCharacter)
-
-                let speed = 0;
-                let position = -30;
-                clearInterval(speed);
-                speed = setInterval(frame, 35);
-
-                function frame() {
-                        if (position == 670) {
-                                clearInterval(speed);
-                                enemyCharacter.remove()
-                                // add some CSS blink effect, remove gold, decrease life 
-                        } else {
-                                position++;
-                                enemyCharacter.style.right = position + 'px';
-                        }
-                }
-        }
-        constructor(name) {
-                this.name = name
-        }
-}
-
-
-
-// 2. test to summon enemies in random row, then use interval to summon in different timing
-
-// Create spawing locations and randomizer
-let fromTop = document.getElementById("spawnTop")
-let fromMiddle = document.getElementById("spawnMiddle")
-let fromBottom = document.getElementById("spawnBottom")
-let spawnLocation = [fromTop, fromMiddle, fromBottom]
+const yCordinate = [10, 110, 210]
 
 const randomValue = (inputArray) => {
         return inputArray[Math.floor(Math.random() * inputArray.length)]
 }
 
-function summonEnemy(limit) {
-        console.log("enemy btn clicked")
-        let enemyCount = 0
-        var interval = setInterval(() => {
+let gameScreen = document.getElementById("game-screen")
 
-                let student = new Enemy("Normal Student")
-                student.createEnemy(randomValue(spawnLocation))
-                console.log(student)
-                enemyCount += 1
+class GameObject {
+        sprite;
+        x;
+        y;
+        DOMElement; // so called variable that editable 'objective'ly
 
-                if (enemyCount === limit) {
-                        clearInterval(interval);
-                }
-        }, 3000);
-        enemyCount = 0;
+        constructor(sprite, x, y) {
+                this.sprite = sprite
+                this.x = x
+                this.y = y
+                // *Super useful = you can set the DOMElement in constructor
+                this.DOMElement = document.createElement("img")
+                this.DOMElement.setAttribute("src", this.sprite)
+                this.DOMElement.style.position = "absolute"
+                this.DOMElement.style.left = this.x + "px"
+                this.DOMElement.style.top = this.y + "px"
+        }
+
+        getBounds() {
+                return this.DOMElement.getBoundingClientRect()
+        }
+
 }
+
+
+class Enemy extends GameObject {
+        speed = 2
+        health = 10
+        className = "enemy-char"
+
+        constructor(x, y, speed) {
+                // to pull the constructor from parents
+                super("./assets/job-seeker.gif", x, y)
+                this.speed = speed;
+                this.DOMElement.setAttribute("class", this.className)
+        }
+}
+
+
+// Create Enemy Examples
+const enemyOne = new Enemy(700, 10, 10)
+const enemyTwo = new Enemy(700, 110, 10)
+const enemyThree = new Enemy(700, 210, 10)
+
+allEnemies.push(enemyOne)
+allEnemies.push(enemyTwo)
+allEnemies.push(enemyThree)
+
+
+for (const enemy of allEnemies) {
+        gameScreen.append(enemy.DOMElement)
+        console.log(enemy.getBounds())
+}
+
+class Bullet extends GameObject {
+        speed = 3
+        className = "bulletDisplay"
+
+        constructor(x, y, speed) {
+                super("./assets/bullet.png", x, y)
+                this.speed
+                this.DOMElement.setAttribute("class", this.className)
+        }
+}
+
+// create Bullet Examples
+const bulletOne = new Bullet(50, 10, 3)
+const bulletTwo = new Bullet(50, 110, 3)
+const bulletThree = new Bullet(50, 210, 3)
+
+allBullets.push(bulletOne)
+allBullets.push(bulletTwo)
+allBullets.push(bulletThree)
+
+for (const bullet of allBullets) {
+        gameScreen.append(bullet.DOMElement)
+        console.log(bullet.getBounds())
+}
+
+
+
 
 
 
@@ -126,22 +102,92 @@ window.onload = function () {
 
         let enemyButton = document.getElementById("send-enemy-button")
         enemyButton.addEventListener("click", waveOne)
+
 }
 
 
 
-// 3.1. function to set tower by clicking button, append class: 'actived' to .towerGround <div>
 
-// 3.2. Click the <div> box to build tower in particular coordinate
+/* ========== Code in Testing Ground ========== */
+let testingGround = document.getElementById("walking-test")
 
-// 4. Create path for enemy
 
-// 5. Create randomizer to summon the enemy position (row 1, row2, row 3)
+/* ============= Archived ============= */
 
-// 6. Create collision function
+// // 1. Tower Object
+// class Tower {
+//         name = ""
+//         shoot() {
+//                 console.log("throw bullet")
+//         }
 
-// 7. Set if enemy Health is Zero, add GOLD amount
+//         constructor(name) {
+//                 this.name = name;
+//         }
+// }
 
+// class SmallTower extends Tower {
+//         shootingDamage = 2
+//         price = 25
+
+//         getDamage() {
+//                 return this.shootingDamage
+//         }
+
+//         printName() {
+//                 console.log("This is small tower")
+//         }
+
+//         constructor(name, shootingDamage, price) {
+//                 super(name)
+//                 this.price = price
+//                 this.shootingDamage = shootingDamage
+//         }
+// }
+// // create Unilever as Small Tower
+// let uniqlo = new SmallTower("Uniqlo", 2, 25)
+
+
+// class BigTower extends Tower {
+//         shootingDamage = 5
+//         price = 45
+
+//         getDamage() {
+//                 return this.shootingDamage
+//         }
+
+//         printName() {
+//                 console.log("This is big tower")
+//         }
+
+//         constructor(name, shootingDamage, price) {
+//                 super(name)
+//                 this.price = price
+//                 this.shootingDamage = shootingDamage
+//         }
+// }
+// // create Apple as Big Tower
+// let apple = new BigTower("Apple", 5, 45)
+
+// function summonEnemy(limit) {
+//         console.log("enemy btn clicked")
+
+//         let enemyCount = 0
+//         var interval = setInterval(() => {
+
+//                 let student = new Enemy("Normal Student")
+//                 allEnemies.push(student)
+//                 // student.createEnemy(randomValue(spawnLocation))
+//                 console.log(allEnemies)
+//                 enemyCount += 1
+
+//                 if (enemyCount === limit) {
+//                         clearInterval(interval);
+//                 }
+//         }, 500);
+//         renderObject()
+//         enemyCount = 0;
+// }
 
 
 
@@ -153,33 +199,14 @@ window.onload = function () {
 
 
 
-/* ========== Testing Ground Code ========== */
-// Test moving object within plain <div>
+/* ========== Pseudo Code ========== */
 
-// let spawnWalkingTest = document.getElementById("walking-test")
+// 3.1. function to set tower by clicking button, append class: 'actived' to .towerGround <div>
 
-// // create Test-Enemy
-// let dummyEnemy2 = document.createElement("img");
-// dummyEnemy2.setAttribute("src", "./assets/job-seeker.gif")
-// dummyEnemy2.setAttribute("id", "test-enemy")
-// // dummyEnemy2.setAttribute("class", "enemySizing")
-// spawnWalkingTest.appendChild(dummyEnemy2)
+// 3.2. Click the <div> box to build tower in particular coordinate
 
-// function testMove() {
-//         let speed = 0;
-//         let selectedEnemy = document.getElementById("test-enemy");
-//         let position = -30;
-//         clearInterval(speed);
-//         speed = setInterval(frame, 5);
+// 5. Pause all character speed
 
-//         function frame() {
-//                 if (position == 670) {
-//                         clearInterval(speed);
-//                         selectedEnemy.remove()
-//                         // add some CSS blink effect, remove gold, decrease life 
-//                 } else {
-//                         position++;
-//                         selectedEnemy.style.right = position + 'px';
-//                 }
-//         }
-// }
+// 6. Create collision function
+
+// 7. Set if enemy Health is Zero, add GOLD amount
