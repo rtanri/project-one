@@ -34,7 +34,6 @@ class GameObject {
         getBounds() {
                 return this.DOMElement.getBoundingClientRect()
         }
-
 }
 
 
@@ -52,20 +51,7 @@ class Enemy extends GameObject {
 }
 
 
-// Create Enemy Examples
-const enemyOne = new Enemy(700, 10, 10)
-const enemyTwo = new Enemy(700, 110, 10)
-const enemyThree = new Enemy(700, 210, 10)
 
-allEnemies.push(enemyOne)
-allEnemies.push(enemyTwo)
-allEnemies.push(enemyThree)
-
-
-for (const enemy of allEnemies) {
-        gameScreen.append(enemy.DOMElement)
-        console.log(enemy.getBounds())
-}
 
 class Bullet extends GameObject {
         speed = 3
@@ -78,20 +64,6 @@ class Bullet extends GameObject {
         }
 }
 
-// create Bullet Examples
-const bulletOne = new Bullet(50, 10, 3)
-const bulletTwo = new Bullet(50, 110, 3)
-const bulletThree = new Bullet(50, 210, 3)
-
-allBullets.push(bulletOne)
-allBullets.push(bulletTwo)
-allBullets.push(bulletThree)
-
-for (const bullet of allBullets) {
-        gameScreen.append(bullet.DOMElement)
-        console.log(bullet.getBounds())
-}
-
 
 
 
@@ -102,6 +74,35 @@ window.onload = function () {
 
         let enemyButton = document.getElementById("send-enemy-button")
         enemyButton.addEventListener("click", waveOne)
+
+        // 1. Create Enemy Examples
+        const enemyOne = new Enemy(700, 10, 10)
+        const enemyTwo = new Enemy(700, 110, 10)
+        const enemyThree = new Enemy(700, 210, 10)
+
+        allEnemies.push(enemyOne)
+        allEnemies.push(enemyTwo)
+        allEnemies.push(enemyThree)
+
+        for (const enemy of allEnemies) {
+                gameScreen.append(enemy.DOMElement)
+                console.log(enemy.getBounds())
+        }
+
+
+        // 2. Create Bullet Examples
+        const bulletOne = new Bullet(50, 10, 3)
+        const bulletTwo = new Bullet(50, 110, 3)
+        const bulletThree = new Bullet(50, 210, 3)
+
+        allBullets.push(bulletOne)
+        allBullets.push(bulletTwo)
+        allBullets.push(bulletThree)
+
+        for (const bullet of allBullets) {
+                gameScreen.append(bullet.DOMElement)
+                console.log(bullet.getBounds())
+        }
 
 }
 
