@@ -56,7 +56,7 @@ class Enemy extends GameObject {
                         } else {
                                 this.x -= this.speed
                                 this.DOMElement.style.left = this.x + "px"
-                                console.log(this.x)
+                                // console.log(this.x)
                         }
                 }, this.intervalSpeed)
         }
@@ -81,10 +81,58 @@ class Bullet extends GameObject {
                         } else {
                                 this.x += this.speed
                                 this.DOMElement.style.left = this.x + "px"
-                                console.log(this.x)
+                                // console.log(this.x)
                         }
                 }, this.intervalSpeed)
         }
+}
+
+function pause() {
+        for (const enemy of allEnemies) {
+                enemy.speed = 0;
+        }
+        for (const bullet of allBullets) {
+                bullet.speed = 0;
+        }
+}
+
+function start() {
+        for (const enemy of allEnemies) {
+                enemy.speed = 10;
+        }
+        for (const bullet of allBullets) {
+                bullet.speed = 10;
+        }
+}
+
+
+// 1. Create Enemy Examples
+const enemyOne = new Enemy(700, 10, 10)
+const enemyTwo = new Enemy(700, 110, 10)
+const enemyThree = new Enemy(700, 210, 10)
+
+allEnemies.push(enemyOne)
+allEnemies.push(enemyTwo)
+allEnemies.push(enemyThree)
+
+for (const enemy of allEnemies) {
+        gameScreen.append(enemy.DOMElement)
+        console.log(enemy.getBounds())
+}
+
+
+// 2. Create Bullet Examples
+const bulletOne = new Bullet(50, 10, 10)
+const bulletTwo = new Bullet(50, 110, 10)
+const bulletThree = new Bullet(50, 210, 10)
+
+allBullets.push(bulletOne)
+allBullets.push(bulletTwo)
+allBullets.push(bulletThree)
+
+for (const bullet of allBullets) {
+        gameScreen.append(bullet.DOMElement)
+        console.log(bullet.getBounds())
 }
 
 
@@ -95,36 +143,8 @@ window.onload = function () {
         // let enemyButton = document.getElementById("send-enemy-button")
         // enemyButton.addEventListener("click", waveOne)
 
-        // 1. Create Enemy Examples
-        const enemyOne = new Enemy(700, 10, 10)
-        const enemyTwo = new Enemy(700, 110, 10)
-        const enemyThree = new Enemy(700, 210, 10)
-
-        allEnemies.push(enemyOne)
-        allEnemies.push(enemyTwo)
-        allEnemies.push(enemyThree)
-
-        for (const enemy of allEnemies) {
-                gameScreen.append(enemy.DOMElement)
-                console.log(enemy.getBounds())
-        }
-
-
-        // 2. Create Bullet Examples
-        const bulletOne = new Bullet(50, 10, 10)
-        const bulletTwo = new Bullet(50, 110, 10)
-        const bulletThree = new Bullet(50, 210, 10)
-
-        allBullets.push(bulletOne)
-        allBullets.push(bulletTwo)
-        allBullets.push(bulletThree)
-
-        for (const bullet of allBullets) {
-                gameScreen.append(bullet.DOMElement)
-                console.log(bullet.getBounds())
-        }
-
 }
+
 /* ========== Code in Testing Ground ========== */
 let testingGround = document.getElementById("walking-test")
 
