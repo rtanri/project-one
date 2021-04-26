@@ -110,43 +110,41 @@ class Enemy extends GameObject {
 
         collide(thing) {
                 // in this function = 'thing' is bullet
-                let isCollide = false
+                // if enemy health is 0, remove from game Screen
+
                 // bullet top Right-Corner hit Enemy's Front Side
                 if (this.xTopLeft < thing.xTopRight &&
-                        this.yTopLeft > thing.yTopRight &&
-                        this.yBottomLeft < thing.yTopRight) {
-                        isCollide = true
-                        this.takeDamage(thing)
-                        thing.DOMElement.remove()
+                        this.yTopLeft < thing.yTopRight &&
+                        this.yBottomLeft > thing.yTopRight) {
+                        return true
+                        // this.takeDamage(thing)
+                        // thing.DOMElement.remove()
                 }
                 // bullet Bottom-Right corner hit Enemy's Front Side
                 else if (this.xBottomLeft < thing.xBottomRight &&
-                        this.yTopLeft > thing.yBottomRight &&
-                        this.yBottomLeft < thing.yBottomRight) {
-                        isCollide = true
-                        this.takeDamage(thing)
-                        thing.DOMElement.remove()
+                        this.yTopLeft < thing.yBottomRight &&
+                        this.yBottomLeft > thing.yBottomRight) {
+                        return true
+                        // this.takeDamage(thing)
+                        // thing.DOMElement.remove()
                 }
                 // bullet Top-Right corner hit Enemy's Bottom Side
                 else if (this.yBottomLeft < thing.yTopRight &&
                         this.xBottomLeft < thing.xTopRight &&
                         this.xBottomRight > thing.xTopRight) {
-                        isCollide = true
-                        this.takeDamage(thing)
-                        thing.DOMElement.remove()
+                        return true
+                        // this.takeDamage(thing)
+                        // thing.DOMElement.remove()
                 }
                 // bullet Bottom-Right corner hit Enemy's Top Side
-                else if (this.yBottomLeft < thing.yBottomRight &&
+                else if (this.yTopLeft < thing.yBottomRight &&
                         this.xTopLeft < thing.xBottomRight &&
                         this.xTopRight > thing.xBottomRight) {
-                        isCollide = true
-                        this.takeDamage(thing)
-                        thing.DOMElement.remove()
+                        return true
+                        // this.takeDamage(thing)
+                        // thing.DOMElement.remove()
                 }
-                // if enemy health is 0, remove from game Screen
-                if (this.health === 0) {
-                        this.DOMElement.remove()
-                }
+
         }
 }
 
@@ -229,7 +227,13 @@ let gameLoop = setInterval(() => {
 
         for (const enemy of allEnemies) {
                 for (const bullet of allBullets) {
-                        enemy.collide(bullet)
+                        if (enemy.collide(bullet) === true) {
+                                enemy.takeDamage(bullet)
+                                bullet.DOMElement.remove()
+                                if (enemy.health === 0) {
+                                        enemy.DOMElement.remove()
+                                }
+                        }
                 }
         }
 
