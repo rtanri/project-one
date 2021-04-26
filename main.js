@@ -5,7 +5,9 @@ const allEnemies = []
 const allTowers = []
 const allBullets = []
 
-const yCordinate = [10, 110, 210]
+// these coordinates will be randomize
+const yCoordinate = [10, 110, 210]
+const yCoordinateBullet = [10, 50, 110, 140, 210] //for testing
 
 const randomValue = (inputArray) => {
         return inputArray[Math.floor(Math.random() * inputArray.length)]
@@ -77,7 +79,6 @@ class GameObject {
         get yBottomRight() {
                 return (this.getBounds().y - 0.5 * this.height)
         }
-
 }
 
 
@@ -102,7 +103,53 @@ class Enemy extends GameObject {
                         this.speed = 0
                 }
         }
+
+        takeDamage(thing) {
+                return this.health -= thing.damage
+        }
+
+        collide(thing) {
+                // in this function = 'thing' is bullet
+                let isCollide = false
+                // bullet top Right-Corner hit Enemy's Front Side
+                if (this.xTopLeft < thing.xTopRight &&
+                        this.yTopLeft > thing.yTopRight &&
+                        this.yBottomLeft < thing.yTopRight) {
+                        isCollide = true
+                        this.takeDamage(thing)
+                        thing.DOMElement.remove()
+                }
+                // bullet Bottom-Right corner hit Enemy's Front Side
+                else if (this.xBottomLeft < thing.xBottomRight &&
+                        this.yTopLeft > thing.yBottomRight &&
+                        this.yBottomLeft < thing.yBottomRight) {
+                        isCollide = true
+                        this.takeDamage(thing)
+                        thing.DOMElement.remove()
+                }
+                // bullet Top-Right corner hit Enemy's Bottom Side
+                else if (this.yBottomLeft < thing.yTopRight &&
+                        this.xBottomLeft < thing.xTopRight &&
+                        this.xBottomRight > thing.xTopRight) {
+                        isCollide = true
+                        this.takeDamage(thing)
+                        thing.DOMElement.remove()
+                }
+                // bullet Bottom-Right corner hit Enemy's Top Side
+                else if (this.yBottomLeft < thing.yBottomRight &&
+                        this.xTopLeft < thing.xBottomRight &&
+                        this.xTopRight > thing.xBottomRight) {
+                        isCollide = true
+                        this.takeDamage(thing)
+                        thing.DOMElement.remove()
+                }
+                // if enemy health is 0, remove from game Screen
+                if (this.health === 0) {
+                        this.DOMElement.remove()
+                }
+        }
 }
+
 
 
 class Bullet extends GameObject {
@@ -158,77 +205,41 @@ function getAllLocations() {
 }
 
 
-
-// 1. Create 3 Enemy Examples
-for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < yCordinate.length; j++) {
-                let student = new Enemy(700, yCordinate[j], 10)
-                allEnemies.push(student)
-        }
+// Create Enemy
+for (let i = 0; i < yCoordinate.length; i++) {
+        let student = new Enemy(700, yCoordinate[i], 10)
+        allEnemies.push(student)
 }
-
+// Create Bullets
+for (let j = 0; j < yCoordinate.length; j++) {
+        let interview = new Bullet(10, yCoordinate[j], 50)
+        allBullets.push(interview)
+        // console.log(allBullets)
+}
+// Appends all in gameScreen
 allEnemies.forEach(enemy => gameScreen.append(enemy.DOMElement))
-// const enemyOne = new Enemy(300, 10, 10)
-// const enemyTwo = new Enemy(700, 110, 10)
-// const enemyThree = new Enemy(700, 210, 10)
-
-// allEnemies.push(enemyOne)
-// allEnemies.push(enemyTwo)
-// allEnemies.push(enemyThree)
-
-// for (const enemy of allEnemies) {
-//         gameScreen.append(enemy.DOMElement)
-
-//         // console.log(enemy.getBounds())
-// }
+allBullets.forEach(ammo => gameScreen.append(ammo.DOMElement))
 
 
-// 2. Create Bullet Examples
-const bulletOne = new Bullet(50, 10, 10)
-const bulletTwo = new Bullet(10, 30, 10)
-const bulletThree = new Bullet(50, 210, 10)
-
-allBullets.push(bulletOne)
-allBullets.push(bulletTwo)
-allBullets.push(bulletThree)
-
-for (const bullet of allBullets) {
-        gameScreen.append(bullet.DOMElement)
-        // console.log(bullet.getBounds())
-}
 
 // main game loop
 let gameLoop = setInterval(() => {
         allEnemies.forEach(enemy => enemy.move())
         allBullets.forEach(bullet => bullet.move())
 
-        if ((enemyOne.getBounds().x - (enemyOne.width / 2)) < (bulletOne.getBounds().x + bulletOne.width / 2)) {
-                // console.log("collide")
-                // enemyOne.DOMElement.remove()
-                enemyOne.health = enemyOne.health - bulletOne.damage
-                console.log(enemyOne.health)
-                bulletOne.DOMElement.remove()
-                if (enemyOne.health === 0) {
-                        enemyOne.DOMElement.remove()
-                }
-        } else if ((enemyOne.xTopLeft) < (bulletTwo.xTopRight)) {
-                enemyOne.health = enemyOne.health - bulletTwo.damage
-                console.log(enemyOne.health)
-                bulletTwo.DOMElement.remove()
-                if (enemyOne.health === 0) {
-                        enemyOne.DOMElement.remove()
+        for (const enemy of allEnemies) {
+                for (const bullet of allBullets) {
+                        enemy.collide(bullet)
                 }
         }
+
 }, 500)
 
 
 
 
 window.onload = function () {
-        // const waveOne = () => summonEnemy(5)
 
-        // let enemyButton = document.getElementById("send-enemy-button")
-        // enemyButton.addEventListener("click", waveOne)
 
 }
 
@@ -327,6 +338,8 @@ let testingGround = document.getElementById("walking-test")
 //         }
 // }
 // collision()
+
+
 
 /* ========== Resources ========== */
 
