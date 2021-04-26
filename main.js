@@ -34,6 +34,50 @@ class GameObject {
         getBounds() {
                 return this.DOMElement.getBoundingClientRect()
         }
+
+        // getter = create custom property ->  GameObject.width
+        get width() {
+                return this.getBounds().width
+        }
+
+        get height() {
+                return this.getBounds().height
+        }
+
+        // coordinate each corner
+
+        // 1. Top Left
+        get xTopLeft() {
+                return (this.getBounds().x - 0.5 * this.width)
+        }
+        get yTopLeft() {
+                return (this.getBounds().y + 0.5 * this.height)
+        }
+
+        // 2. Bottom Left
+        get xBottomLeft() {
+                return (this.getBounds().x - 0.5 * this.width)
+        }
+        get yBottomLeft() {
+                return (this.getBounds().y - 0.5 * this.height)
+        }
+
+        // 3. Top Right
+        get xTopRight() {
+                return (this.getBounds().x + 0.5 * this.width)
+        }
+        get yTopRight() {
+                return (this.getBounds().y + 0.5 * this.height)
+        }
+
+        // 4. Bottom Right
+        get xBottomRight() {
+                return (this.getBounds().x + 0.5 * this.width)
+        }
+        get yBottomRight() {
+                return (this.getBounds().y - 0.5 * this.height)
+        }
+
 }
 
 
@@ -49,18 +93,15 @@ class Enemy extends GameObject {
                 super("./assets/job-seeker.gif", x, y)
                 this.speed = speed;
                 this.DOMElement.setAttribute("class", this.className)
-                this.DOMElement.style.left = setInterval(() => {
-                        if (this.x === 50) {
-                                clearInterval()
-                                this.intervalSpeed = 0
-                        } else {
-                                this.x -= this.speed
-                                this.DOMElement.style.left = this.x + "px"
-                                // console.log(this.x)
-                        }
-                }, this.intervalSpeed)
         }
 
+        move() {
+                this.x -= this.speed
+                this.DOMElement.style.left = this.x + "px"
+                if (this.x <= 0) {
+                        this.speed = 0
+                }
+        }
 }
 
 
@@ -68,22 +109,21 @@ class Bullet extends GameObject {
         speed;
         className = "bulletDisplay";
         intervalSpeed = 500;
+        damage = 5;
 
 
         constructor(x, y, speed) {
                 super("./assets/bullet.png", x, y)
                 this.speed = speed
                 this.DOMElement.setAttribute("class", this.className)
-                this.DOMElement.style.left = setInterval(() => {
-                        if (this.x === 700) {
-                                clearInterval()
-                                this.intervalSpeed = 0
-                        } else {
-                                this.x += this.speed
-                                this.DOMElement.style.left = this.x + "px"
-                                // console.log(this.x)
-                        }
-                }, this.intervalSpeed)
+        }
+
+        move() {
+                this.x += this.speed
+                this.DOMElement.style.left = this.x + "px"
+                if (this.x >= 700) {
+                        this.DOMElement.remove()
+                }
         }
 }
 
@@ -105,25 +145,47 @@ function start() {
         }
 }
 
+function getAllLocations() {
+        for (const enemy of allEnemies) {
+                // gameScreen.append(enemy.DOMElement)
+                console.log(enemy.getBounds())
+        }
+        for (const bullet of allBullets) {
+                // gameScreen.append(enemy.DOMElement)
+                console.log(bullet.getBounds())
+        }
 
-// 1. Create Enemy Examples
-const enemyOne = new Enemy(700, 10, 10)
-const enemyTwo = new Enemy(700, 110, 10)
-const enemyThree = new Enemy(700, 210, 10)
-
-allEnemies.push(enemyOne)
-allEnemies.push(enemyTwo)
-allEnemies.push(enemyThree)
-
-for (const enemy of allEnemies) {
-        gameScreen.append(enemy.DOMElement)
-        console.log(enemy.getBounds())
 }
+
+
+
+// 1. Create 3 Enemy Examples
+for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < yCordinate.length; j++) {
+                let student = new Enemy(700, yCordinate[j], 10)
+                allEnemies.push(student)
+        }
+}
+
+allEnemies.forEach(enemy => gameScreen.append(enemy.DOMElement))
+// const enemyOne = new Enemy(300, 10, 10)
+// const enemyTwo = new Enemy(700, 110, 10)
+// const enemyThree = new Enemy(700, 210, 10)
+
+// allEnemies.push(enemyOne)
+// allEnemies.push(enemyTwo)
+// allEnemies.push(enemyThree)
+
+// for (const enemy of allEnemies) {
+//         gameScreen.append(enemy.DOMElement)
+
+//         // console.log(enemy.getBounds())
+// }
 
 
 // 2. Create Bullet Examples
 const bulletOne = new Bullet(50, 10, 10)
-const bulletTwo = new Bullet(50, 110, 10)
+const bulletTwo = new Bullet(10, 30, 10)
 const bulletThree = new Bullet(50, 210, 10)
 
 allBullets.push(bulletOne)
@@ -132,8 +194,33 @@ allBullets.push(bulletThree)
 
 for (const bullet of allBullets) {
         gameScreen.append(bullet.DOMElement)
-        console.log(bullet.getBounds())
+        // console.log(bullet.getBounds())
 }
+
+// main game loop
+let gameLoop = setInterval(() => {
+        allEnemies.forEach(enemy => enemy.move())
+        allBullets.forEach(bullet => bullet.move())
+
+        if ((enemyOne.getBounds().x - (enemyOne.width / 2)) < (bulletOne.getBounds().x + bulletOne.width / 2)) {
+                // console.log("collide")
+                // enemyOne.DOMElement.remove()
+                enemyOne.health = enemyOne.health - bulletOne.damage
+                console.log(enemyOne.health)
+                bulletOne.DOMElement.remove()
+                if (enemyOne.health === 0) {
+                        enemyOne.DOMElement.remove()
+                }
+        } else if ((enemyOne.xTopLeft) < (bulletTwo.xTopRight)) {
+                enemyOne.health = enemyOne.health - bulletTwo.damage
+                console.log(enemyOne.health)
+                bulletTwo.DOMElement.remove()
+                if (enemyOne.health === 0) {
+                        enemyOne.DOMElement.remove()
+                }
+        }
+}, 500)
+
 
 
 
@@ -226,7 +313,20 @@ let testingGround = document.getElementById("walking-test")
 //         enemyCount = 0;
 // }
 
+// code graveyard - trying to code collission
+// function collision() {
+//         for (const bullet of allBullets) {
+//                 for (const enemy of allEnemies) {
+//                         bulletMostRightDimension = bullet.getBounds().x + 20
+//                         enemyMostLeftDimension = enemy.getBounds().x - 22
 
+//                         if (bulletMostRightDimension >= enemyMostLeftDimension) {
+//                                 console.log("it is collide")
+//                         }
+//                 }
+//         }
+// }
+// collision()
 
 /* ========== Resources ========== */
 
