@@ -15,6 +15,37 @@ const randomValue = (inputArray) => {
 
 let gameScreen = document.getElementById("game-screen")
 
+function pause() {
+        for (const enemy of allEnemies) {
+                enemy.speed = 0;
+        }
+        for (const bullet of allBullets) {
+                bullet.speed = 0;
+        }
+}
+
+function start() {
+        for (const enemy of allEnemies) {
+                enemy.speed = 10;
+        }
+        for (const bullet of allBullets) {
+                bullet.speed = 10;
+        }
+}
+
+function getAllLocations() {
+        for (const enemy of allEnemies) {
+                // gameScreen.append(enemy.DOMElement)
+                console.log(enemy.getBounds())
+        }
+        for (const bullet of allBullets) {
+                // gameScreen.append(enemy.DOMElement)
+                console.log(bullet.getBounds())
+        }
+
+}
+
+
 class GameObject {
         sprite;
         x;
@@ -85,7 +116,7 @@ class GameObject {
 class Enemy extends GameObject {
         speed;
         intervalSpeed = 500;
-        health = 10
+        health = 20
         className = "enemy-char"
 
 
@@ -139,12 +170,9 @@ class Enemy extends GameObject {
         }
 }
 
-
-
 class Bullet extends GameObject {
         speed;
         className = "bulletDisplay";
-        intervalSpeed = 500;
         damage = 5;
 
 
@@ -162,9 +190,6 @@ class Bullet extends GameObject {
                 }
         }
 
-        nalDown() {
-
-        }
 }
 
 class UpDiagonalBullet extends Bullet {
@@ -204,65 +229,90 @@ class DownDiagonalBullet extends Bullet {
 }
 
 
-// class Tower extends GameObject {
-//         className =
-// }
+class SmallTower extends GameObject {
+        // sending 1 bullet
+        className = "towerDisplay"
 
-function pause() {
-        for (const enemy of allEnemies) {
-                enemy.speed = 0;
+        constructor(x, y) {
+                // to pull the constructor from parents
+                super("./assets/Recruiter-side.png", x, y)
+                this.DOMElement.setAttribute("class", this.className)
         }
-        for (const bullet of allBullets) {
-                bullet.speed = 0;
-        }
-}
 
-function start() {
-        for (const enemy of allEnemies) {
-                enemy.speed = 10;
-        }
-        for (const bullet of allBullets) {
-                bullet.speed = 10;
-        }
-}
-
-function getAllLocations() {
-        for (const enemy of allEnemies) {
-                // gameScreen.append(enemy.DOMElement)
-                console.log(enemy.getBounds())
-        }
-        for (const bullet of allBullets) {
-                // gameScreen.append(enemy.DOMElement)
-                console.log(bullet.getBounds())
-        }
 
 }
 
+class BigTower extends GameObject {
+        // sending 3 bullets 
+        className = "towerDisplay"
 
-// Create Enemy
+        constructor(x, y) {
+                // to pull the constructor from parents
+                super("./assets/sparkle.png", x, y)
+                this.DOMElement.setAttribute("class", this.className)
+        }
+}
+
+
+
+// Create Enemy (don't delete, just hide)
 for (let i = 0; i < yCoordinate.length; i++) {
-        let student = new Enemy(700, yCoordinate[i], 10)
+        let student = new Enemy(700, yCoordinate[i], 5)
         allEnemies.push(student)
 }
-// Create Bullets
-for (let j = 0; j < yCoordinateBullet.length; j++) {
-        let interview = new Bullet(10, yCoordinateBullet[j], 50)
-        let interview2 = new UpDiagonalBullet(10, yCoordinateBullet[j], 50)
-        let interview3 = new DownDiagonalBullet(10, yCoordinateBullet[j], 50)
-        allBullets.push(interview)
-        allBullets.push(interview2)
-        allBullets.push(interview3)
-        // console.log(allBullets)
+
+// Create Bullets (don't delete, just hide)
+function sendBullet() {
+        for (let j = 0; j < yCoordinateBullet.length; j++) {
+                let interview = new Bullet(10, yCoordinateBullet[j], 10)
+                let interview2 = new UpDiagonalBullet(10, yCoordinateBullet[j], 10)
+                let interview3 = new DownDiagonalBullet(10, yCoordinateBullet[j], 10)
+                allBullets.push(interview)
+                allBullets.push(interview2)
+                allBullets.push(interview3)
+                // console.log(allBullets)
+                allBullets.forEach(bullet => gameScreen.append(bullet.DOMElement))
+        }
 }
+sendBullet()
+
+
+// create Tower
+for (let i = 0; i < yCoordinate.length; i++) {
+        let company = new SmallTower(10, yCoordinate[i])
+        allTowers.push(company)
+}
+
+
+
 // Appends all in gameScreen
 allEnemies.forEach(enemy => gameScreen.append(enemy.DOMElement))
-allBullets.forEach(bullet => gameScreen.append(bullet.DOMElement))
+// allBullets.forEach(bullet => gameScreen.append(bullet.DOMElement))
+allTowers.forEach(tower => gameScreen.append(tower.DOMElement))
 
-
+let count = 0
 // main game loop
 let gameLoop = setInterval(() => {
+        count += 1
+        console.log(count)
         allEnemies.forEach(enemy => enemy.move())
         allBullets.forEach(bullet => bullet.move())
+        if (count % 100 === 0) {
+                sendBullet()
+        }
+
+        // if (count % 80 === 0) {
+        //         for (let j = 0; j < yCoordinateBullet.length; j++) {
+        //                 let interview = new Bullet(10, yCoordinateBullet[j], 10)
+        //                 let interview2 = new UpDiagonalBullet(10, yCoordinateBullet[j], 10)
+        //                 let interview3 = new DownDiagonalBullet(10, yCoordinateBullet[j], 10)
+        //                 allBullets.push(interview)
+        //                 allBullets.push(interview2)
+        //                 allBullets.push(interview3)
+        //                 // console.log(allBullets)
+        //         }
+        //         allBullets.forEach(bullet => gameScreen.append(bullet.DOMElement))
+        // }
 
         for (const enemy of allEnemies) {
                 for (const bullet of allBullets) {
@@ -275,7 +325,7 @@ let gameLoop = setInterval(() => {
                         }
                 }
         }
-}, 500)
+}, 200)
 
 
 

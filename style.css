@@ -61,6 +61,12 @@ body{
 }
 
 
+.towerDisplay{
+        height:90px;
+        width: 45px;
+        position: absolute;
+}
+
 
 /* ========== Status Board and Tower Button CSS ========== */
 
