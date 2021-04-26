@@ -7,7 +7,7 @@ const allBullets = []
 
 // these coordinates will be randomize
 const yCoordinate = [10, 110, 210]
-const yCoordinateBullet = [10, 50, 110, 140, 210] //for testing
+const yCoordinateBullet = [10, 110, 210] //for testing
 
 const randomValue = (inputArray) => {
         return inputArray[Math.floor(Math.random() * inputArray.length)]
@@ -48,36 +48,36 @@ class GameObject {
 
         // coordinate each corner
 
-        // 1. Top Left
+        // 1. Top Left v
         get xTopLeft() {
-                return (this.getBounds().x - 0.5 * this.width)
+                return (this.getBounds().left)
         }
         get yTopLeft() {
-                return (this.getBounds().y + 0.5 * this.height)
+                return (this.getBounds().top)
         }
 
-        // 2. Bottom Left
+        // 2. Bottom Left v
         get xBottomLeft() {
-                return (this.getBounds().x - 0.5 * this.width)
+                return (this.getBounds().left)
         }
         get yBottomLeft() {
-                return (this.getBounds().y - 0.5 * this.height)
+                return (this.getBounds().bottom)
         }
 
-        // 3. Top Right
+        // 3. Top Right v
         get xTopRight() {
-                return (this.getBounds().x + 0.5 * this.width)
+                return (this.getBounds().right)
         }
         get yTopRight() {
-                return (this.getBounds().y + 0.5 * this.height)
+                return (this.getBounds().top)
         }
 
-        // 4. Bottom Right
+        // 4. Bottom Right v
         get xBottomRight() {
-                return (this.getBounds().x + 0.5 * this.width)
+                return (this.getBounds().right)
         }
         get yBottomRight() {
-                return (this.getBounds().y - 0.5 * this.height)
+                return (this.getBounds().bottom)
         }
 }
 
@@ -113,38 +113,29 @@ class Enemy extends GameObject {
                 // if enemy health is 0, remove from game Screen
 
                 // bullet top Right-Corner hit Enemy's Front Side
-                if (this.xTopLeft < thing.xTopRight &&
-                        this.yTopLeft < thing.yTopRight &&
-                        this.yBottomLeft > thing.yTopRight) {
-                        return true
-                        // this.takeDamage(thing)
-                        // thing.DOMElement.remove()
+                if (this.xTopLeft < thing.xTopRight) {
+                        if (this.yTopLeft < thing.yTopRight && this.yBottomLeft > thing.yTopRight) {
+                                return true
+                        }
                 }
                 // bullet Bottom-Right corner hit Enemy's Front Side
-                else if (this.xBottomLeft < thing.xBottomRight &&
-                        this.yTopLeft < thing.yBottomRight &&
-                        this.yBottomLeft > thing.yBottomRight) {
-                        return true
-                        // this.takeDamage(thing)
-                        // thing.DOMElement.remove()
+                else if (this.xBottomLeft < thing.xBottomRight) {
+                        if (this.yTopLeft < thing.yBottomRight && this.yBottomLeft > thing.yBottomRight) {
+                                return true
+                        }
                 }
                 // bullet Top-Right corner hit Enemy's Bottom Side
-                else if (this.yBottomLeft < thing.yTopRight &&
-                        this.xBottomLeft < thing.xTopRight &&
-                        this.xBottomRight > thing.xTopRight) {
-                        return true
-                        // this.takeDamage(thing)
-                        // thing.DOMElement.remove()
+                else if (this.yBottomLeft < thing.yTopRight) {
+                        if (this.xBottomLeft < thing.xTopRight && this.xBottomRight > thing.xTopRight) {
+                                return true
+                        }
                 }
                 // bullet Bottom-Right corner hit Enemy's Top Side
-                else if (this.yTopLeft < thing.yBottomRight &&
-                        this.xTopLeft < thing.xBottomRight &&
-                        this.xTopRight > thing.xBottomRight) {
-                        return true
-                        // this.takeDamage(thing)
-                        // thing.DOMElement.remove()
+                else if (this.yTopLeft < thing.yBottomRight) {
+                        if (this.xTopLeft < thing.xBottomRight && this.xTopRight > thing.xBottomRight) {
+                                return true
+                        }
                 }
-
         }
 }
 
@@ -170,7 +161,52 @@ class Bullet extends GameObject {
                         this.DOMElement.remove()
                 }
         }
+
+        nalDown() {
+
+        }
 }
+
+class UpDiagonalBullet extends Bullet {
+        constructor(x, y, speed) {
+                super(x, y, speed)
+                this.x = x;
+                this.y = y;
+                this.speed = speed;
+        }
+        move() {
+                this.x += this.speed
+                this.y -= this.speed / 6
+                this.DOMElement.style.left = this.x + "px"
+                this.DOMElement.style.top = this.y + "px"
+                if (this.xTopRight >= 740 || this.yTopRight <= 110) {
+                        this.DOMElement.remove()
+                }
+        }
+}
+
+class DownDiagonalBullet extends Bullet {
+        constructor(x, y, speed) {
+                super(x, y, speed)
+                this.x = x;
+                this.y = y;
+                this.speed = speed;
+        }
+        move() {
+                this.x += this.speed
+                this.y += this.speed / 6
+                this.DOMElement.style.left = this.x + "px"
+                this.DOMElement.style.top = this.y + "px"
+                if (this.xTopRight >= 740 || this.yBottomRight >= 420) {
+                        this.DOMElement.remove()
+                }
+        }
+}
+
+
+// class Tower extends GameObject {
+//         className =
+// }
 
 function pause() {
         for (const enemy of allEnemies) {
@@ -209,15 +245,18 @@ for (let i = 0; i < yCoordinate.length; i++) {
         allEnemies.push(student)
 }
 // Create Bullets
-for (let j = 0; j < yCoordinate.length; j++) {
-        let interview = new Bullet(10, yCoordinate[j], 50)
+for (let j = 0; j < yCoordinateBullet.length; j++) {
+        let interview = new Bullet(10, yCoordinateBullet[j], 50)
+        let interview2 = new UpDiagonalBullet(10, yCoordinateBullet[j], 50)
+        let interview3 = new DownDiagonalBullet(10, yCoordinateBullet[j], 50)
         allBullets.push(interview)
+        allBullets.push(interview2)
+        allBullets.push(interview3)
         // console.log(allBullets)
 }
 // Appends all in gameScreen
 allEnemies.forEach(enemy => gameScreen.append(enemy.DOMElement))
-allBullets.forEach(ammo => gameScreen.append(ammo.DOMElement))
-
+allBullets.forEach(bullet => gameScreen.append(bullet.DOMElement))
 
 
 // main game loop
@@ -236,7 +275,6 @@ let gameLoop = setInterval(() => {
                         }
                 }
         }
-
 }, 500)
 
 
