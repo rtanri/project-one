@@ -60,6 +60,15 @@ function removeFromArray(parentArray, DOMElement, uniqueId) {
         parentArray.splice(index, 1);
 }
 
+function editGold(num) {
+        let goldValue = parseInt(document.getElementById("gold").innerText)
+        goldValue = (goldValue + num)
+
+        if (goldValue < 0) return
+
+        document.getElementById("gold").innerText = goldValue
+}
+
 
 class GameObject {
         sprite;
@@ -320,6 +329,7 @@ function afterCollision() {
                                         // let enemyIndex = allEnemies.indexOf(enemy.id)
                                         // allEnemies.splice(enemyIndex, 1)
                                         removeFromArray(allEnemies, enemy.DOMElement, enemy.id)
+                                        editGold(50)
                                 }
                         }
                 }

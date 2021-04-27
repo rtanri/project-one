@@ -27,3 +27,6 @@ Player need to defeat all enemies and protect their safe zone (left side) by bui
 ![background](./assets/readme/tag-bullet-to-tower-type.jpg)
 
 1. Set unique id for each 'GameObject' to help calling their index when we want to remove from main arrays
+
+1. Test overall Colisions, removing enemies & bullets from array, and add +50 gold for each enemy died
+![background](./assets/readme/addGold-and-remove-enemy-from-allEnemies)
