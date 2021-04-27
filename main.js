@@ -232,6 +232,7 @@ class DownDiagonalBullet extends Bullet {
 class SmallTower extends GameObject {
         // sending 1 bullet
         className = "towerDisplay"
+        internalCount = 0
 
         constructor(x, y) {
                 // to pull the constructor from parents
@@ -239,81 +240,51 @@ class SmallTower extends GameObject {
                 this.DOMElement.setAttribute("class", this.className)
         }
 
+        startCounting() {
+                this.internalCount++
+        }
 
+
+        sendBullet() {
+                let interview = new Bullet(10, this.y, 10)
+                allBullets.push(interview)
+                allBullets.forEach(bullet => gameScreen.append(bullet.DOMElement))
+        }
 }
 
 class BigTower extends GameObject {
         // sending 3 bullets 
         className = "towerDisplay"
+        internalCount = 0;
 
         constructor(x, y) {
                 // to pull the constructor from parents
                 super("./assets/sparkle.png", x, y)
                 this.DOMElement.setAttribute("class", this.className)
         }
-}
 
+        startCounting() {
+                this.internalCount++
+        }
 
-
-// Create Enemy (don't delete, just hide)
-for (let i = 0; i < yCoordinate.length; i++) {
-        let student = new Enemy(700, yCoordinate[i], 5)
-        allEnemies.push(student)
-}
-
-// Create Bullets (don't delete, just hide)
-function sendBullet() {
-        for (let j = 0; j < yCoordinateBullet.length; j++) {
-                let interview = new Bullet(10, yCoordinateBullet[j], 10)
-                let interview2 = new UpDiagonalBullet(10, yCoordinateBullet[j], 10)
-                let interview3 = new DownDiagonalBullet(10, yCoordinateBullet[j], 10)
+        sendBullet() {
+                let interview = new Bullet(10, this.y, 10)
+                let interview2 = new UpDiagonalBullet(10, this.y, 10)
+                let interview3 = new DownDiagonalBullet(10, this.y, 10)
                 allBullets.push(interview)
                 allBullets.push(interview2)
                 allBullets.push(interview3)
-                // console.log(allBullets)
                 allBullets.forEach(bullet => gameScreen.append(bullet.DOMElement))
+
         }
 }
-sendBullet()
 
 
-// create Tower
-for (let i = 0; i < yCoordinate.length; i++) {
-        let company = new SmallTower(10, yCoordinate[i])
-        allTowers.push(company)
-}
+// // ALL sendBullet() migrated to internal tower method
 
 
-
-// Appends all in gameScreen
-allEnemies.forEach(enemy => gameScreen.append(enemy.DOMElement))
-// allBullets.forEach(bullet => gameScreen.append(bullet.DOMElement))
-allTowers.forEach(tower => gameScreen.append(tower.DOMElement))
-
-let count = 0
-// main game loop
-let gameLoop = setInterval(() => {
-        count += 1
-        console.log(count)
-        allEnemies.forEach(enemy => enemy.move())
-        allBullets.forEach(bullet => bullet.move())
-        if (count % 100 === 0) {
-                sendBullet()
-        }
-
-        // if (count % 80 === 0) {
-        //         for (let j = 0; j < yCoordinateBullet.length; j++) {
-        //                 let interview = new Bullet(10, yCoordinateBullet[j], 10)
-        //                 let interview2 = new UpDiagonalBullet(10, yCoordinateBullet[j], 10)
-        //                 let interview3 = new DownDiagonalBullet(10, yCoordinateBullet[j], 10)
-        //                 allBullets.push(interview)
-        //                 allBullets.push(interview2)
-        //                 allBullets.push(interview3)
-        //                 // console.log(allBullets)
-        //         }
-        //         allBullets.forEach(bullet => gameScreen.append(bullet.DOMElement))
-        // }
-
+// collide in between Enemy and bullet
+function afterCollision() {
         for (const enemy of allEnemies) {
                 for (const bullet of allBullets) {
                         if (enemy.collide(bullet) === true) {
@@ -325,6 +296,51 @@ let gameLoop = setInterval(() => {
                         }
                 }
         }
+}
+
+
+// create Tower
+for (let i = 0; i < yCoordinate.length; i++) {
+        let company1 = new SmallTower(10, 10)
+        let company2 = new BigTower(10, 110)
+        let company3 = new SmallTower(10, 210)
+        allTowers.push(company1, company2, company3)
+        // allTowers.push(company1)
+}
+
+
+
+// Appends all in gameScreen
+// allEnemies.forEach(enemy => gameScreen.append(enemy.DOMElement))
+// allBullets.forEach(bullet => gameScreen.append(bullet.DOMElement))
+allTowers.forEach(tower => gameScreen.append(tower.DOMElement))
+
+let count = 0
+// main game loop
+let gameLoop = setInterval(() => {
+
+        count += 1
+
+        allEnemies.forEach(enemy => enemy.move())
+        allBullets.forEach(bullet => bullet.move())
+        allTowers.forEach(tower => tower.startCounting())
+
+        for (const tower of allTowers) {
+                console.log(tower.internalCount)
+                if (tower.internalCount % 10 === 0) {
+                        tower.sendBullet()
+                }
+        }
+
+        afterCollision();
+        // if (count % 80 === 0) {
+        //         sendEnemy()
+        // }
+        // if (count % 100 === 0) {
+        //         sendBullet()
+        // }
+
+
 }, 200)
 
 
@@ -338,6 +354,8 @@ window.onload = function () {
 /* ========== Code in Testing Ground ========== */
 let testingGround = document.getElementById("walking-test")
 
+// error: the removed bullet that has collide the Enemy, continue to give damage to enemy when the allBullet recalled again.
+// solution: we need to splice the out-of-bound bullet from allBullets array -- need to set the function when bullet first created
 
 /* ============= Archived ============= */
 
