@@ -51,6 +51,15 @@ function getAllLocations() {
 }
 
 
+function removeFromArray(parentArray, DOMElement, uniqueId) {
+        DOMElement.remove()
+        let index = parentArray.map(x => {
+                return x.id
+        }).indexOf(uniqueId)
+        // console.log(index) // this show correct index
+        parentArray.splice(index, 1);
+}
+
 
 class GameObject {
         sprite;
@@ -200,11 +209,9 @@ class Bullet extends GameObject {
                 this.x += this.speed
                 this.DOMElement.style.left = this.x + "px"
                 if (this.x >= 700) {
-                        this.DOMElement.remove()
-
+                        removeFromArray(allBullets, this.DOMElement, this.id)
                 }
         }
-
 }
 
 class UpDiagonalBullet extends Bullet {
@@ -219,8 +226,8 @@ class UpDiagonalBullet extends Bullet {
                 this.y -= this.speed / 6
                 this.DOMElement.style.left = this.x + "px"
                 this.DOMElement.style.top = this.y + "px"
-                if (this.xTopRight >= 740 || this.yTopRight <= 110) {
-                        this.DOMElement.remove()
+                if (this.x >= 700 || this.y < 0) {
+                        removeFromArray(allBullets, this.DOMElement, this.id)
                 }
         }
 }
@@ -237,8 +244,8 @@ class DownDiagonalBullet extends Bullet {
                 this.y += this.speed / 6
                 this.DOMElement.style.left = this.x + "px"
                 this.DOMElement.style.top = this.y + "px"
-                if (this.xTopRight >= 740 || this.yBottomRight >= 420) {
-                        this.DOMElement.remove()
+                if (this.x >= 700 || this.y >= 250) {
+                        removeFromArray(allBullets, this.DOMElement, this.id)
                 }
         }
 }
@@ -261,7 +268,7 @@ class SmallTower extends GameObject {
 
 
         sendBullet() {
-                let interview = new Bullet(10, this.y, 10)
+                let interview = new Bullet(50, this.y, 10)
                 allBullets.push(interview)
                 allBullets.forEach(bullet => gameScreen.append(bullet.DOMElement))
         }
@@ -283,9 +290,9 @@ class BigTower extends GameObject {
         }
 
         sendBullet() {
-                let interview = new Bullet(10, this.y, 10)
-                let interview2 = new UpDiagonalBullet(10, this.y, 10)
-                let interview3 = new DownDiagonalBullet(10, this.y, 10)
+                let interview = new Bullet(50, this.y, 10)
+                let interview2 = new UpDiagonalBullet(50, this.y, 10)
+                let interview3 = new DownDiagonalBullet(50, this.y, 10)
                 allBullets.push(interview)
                 allBullets.push(interview2)
                 allBullets.push(interview3)
@@ -301,16 +308,18 @@ function afterCollision() {
                         if (enemy.collide(bullet) === true) {
                                 enemy.takeDamage(bullet)
 
-                                // delete this.bullet from allBullets array & DOMElement
-                                bullet.DOMElement.remove()
-                                let bulletIndex = allBullets.indexOf(bullet.id)
-                                allBullets.splice(bulletIndex, 1);
+                                // // delete this.bullet from allBullets array & DOMElement
+                                // bullet.DOMElement.remove()
+                                // let bulletIndex = allBullets.indexOf(bullet.id)
+                                // allBullets.splice(bulletIndex, 1);
+                                removeFromArray(allBullets, bullet.DOMElement, bullet.id)
 
                                 // delete this.enemy from allEnemy array & DOMElement
                                 if (enemy.health === 0) {
-                                        enemy.DOMElement.remove()
-                                        let enemyIndex = allEnemies.indexOf(enemy.id)
-                                        allEnemies.splice(enemyIndex, 1)
+                                        // enemy.DOMElement.remove()
+                                        // let enemyIndex = allEnemies.indexOf(enemy.id)
+                                        // allEnemies.splice(enemyIndex, 1)
+                                        removeFromArray(allEnemies, enemy.DOMElement, enemy.id)
                                 }
                         }
                 }
@@ -322,8 +331,8 @@ function afterCollision() {
 let company1 = new SmallTower(10, 10)
 let company2 = new BigTower(10, 110)
 let company3 = new SmallTower(10, 210)
+// allTowers.push(company1, company2, company3)
 allTowers.push(company1, company2, company3)
-
 
 // create enemy
 let enemy1 = new Enemy(700, 10, 5)
@@ -335,7 +344,6 @@ allEnemies.push(enemy1, enemy2, enemy3)
 // Appends all in gameScreen
 allEnemies.forEach(enemy => gameScreen.append(enemy.DOMElement))
 allTowers.forEach(tower => gameScreen.append(tower.DOMElement))
-// allBullets.forEach(bullet => gameScreen.append(bullet.DOMElement))
 
 
 let count = 0
@@ -352,7 +360,7 @@ let gameLoop = setInterval(() => {
 
         for (const tower of allTowers) {
                 // console.log(tower.internalCount)
-                if (tower.internalCount % 1000 === 0) {
+                if (tower.internalCount % 20 === 0) {
                         tower.sendBullet()
                 }
         }
@@ -367,8 +375,6 @@ let gameLoop = setInterval(() => {
 
 
 }, 200)
-
-
 
 
 window.onload = function () {
