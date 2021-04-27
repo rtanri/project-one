@@ -69,6 +69,31 @@ function editGold(num) {
         document.getElementById("gold").innerText = goldValue
 }
 
+function buildSmallTower() {
+        let selectedGround = document.getElementsByClassName("towerGround")
+        console.log(selectedGround)
+        for (const square of selectedGround) {
+                square.classList.add("activedOne")
+                square.addEventListener("click", (e) => {
+                        let xPoint = Math.floor(e.screenX)
+                        let yPoint = Math.floor(e.screenY)
+                        console.log(`Build Tower 1 in (x,y): ${xPoint},${yPoint}`)
+                })
+        }
+}
+
+function buildBigTower() {
+        let selectedGround = document.getElementsByClassName("towerGround")
+        console.log(selectedGround)
+        for (const square of selectedGround) {
+                square.classList.add("activedTwo")
+                square.addEventListener("click", (e) => {
+                        let xPoint = Math.floor(e.screenX)
+                        let yPoint = Math.floor(e.screenY)
+                        console.log(`Build Tower 2 in (x,y): ${xPoint},${yPoint}`)
+                })
+        }
+}
 
 class GameObject {
         sprite;
@@ -154,7 +179,7 @@ class Enemy extends GameObject {
 
         constructor(x, y, speed) {
                 // to pull the constructor from parents
-                super("./assets/job-seeker.gif", x, y)
+                super("./assets/confused.png", x, y)
                 this.speed = speed;
                 this.DOMElement.setAttribute("class", this.className)
         }
@@ -262,12 +287,12 @@ class DownDiagonalBullet extends Bullet {
 
 class SmallTower extends GameObject {
         // sending 1 bullet
-        className = "towerDisplay"
+        className = "smallTowerDisplay"
         internalCount = 0
 
         constructor(x, y) {
                 // to pull the constructor from parents
-                super("./assets/Recruiter-side.png", x, y)
+                super("./assets/sme.png", x, y)
                 this.DOMElement.setAttribute("class", this.className)
         }
 
@@ -277,7 +302,7 @@ class SmallTower extends GameObject {
 
 
         sendBullet() {
-                let interview = new Bullet(50, this.y, 10)
+                let interview = new Bullet(80, this.y, 10)
                 allBullets.push(interview)
                 allBullets.forEach(bullet => gameScreen.append(bullet.DOMElement))
         }
@@ -285,12 +310,12 @@ class SmallTower extends GameObject {
 
 class BigTower extends GameObject {
         // sending 3 bullets 
-        className = "towerDisplay"
+        className = "bigTowerDisplay"
         internalCount = 0;
 
         constructor(x, y) {
                 // to pull the constructor from parents
-                super("./assets/sparkle.png", x, y)
+                super("./assets/international.png", x, y)
                 this.DOMElement.setAttribute("class", this.className)
         }
 
@@ -299,9 +324,9 @@ class BigTower extends GameObject {
         }
 
         sendBullet() {
-                let interview = new Bullet(50, this.y, 10)
-                let interview2 = new UpDiagonalBullet(50, this.y, 10)
-                let interview3 = new DownDiagonalBullet(50, this.y, 10)
+                let interview = new Bullet(80, this.y, 10)
+                let interview2 = new UpDiagonalBullet(80, this.y, 10)
+                let interview3 = new DownDiagonalBullet(80, this.y, 10)
                 allBullets.push(interview)
                 allBullets.push(interview2)
                 allBullets.push(interview3)
@@ -337,23 +362,22 @@ function afterCollision() {
 }
 
 
-// create Tower
-let company1 = new SmallTower(10, 10)
-let company2 = new BigTower(10, 110)
-let company3 = new SmallTower(10, 210)
+// // create Tower
+// let company1 = new SmallTower(10, 10)
+// let company2 = new BigTower(10, 110)
+// let company3 = new SmallTower(10, 210)
 // allTowers.push(company1, company2, company3)
-allTowers.push(company1, company2, company3)
 
-// create enemy
-let enemy1 = new Enemy(700, 10, 5)
-let enemy2 = new Enemy(700, 110, 5)
-let enemy3 = new Enemy(700, 210, 5)
-allEnemies.push(enemy1, enemy2, enemy3)
+// // create enemy
+// let enemy1 = new Enemy(700, 10, 5)
+// let enemy2 = new Enemy(700, 110, 5)
+// let enemy3 = new Enemy(700, 210, 5)
+// allEnemies.push(enemy1, enemy2, enemy3)
 
 
-// Appends all in gameScreen
-allEnemies.forEach(enemy => gameScreen.append(enemy.DOMElement))
-allTowers.forEach(tower => gameScreen.append(tower.DOMElement))
+// // Appends all in gameScreen
+// allEnemies.forEach(enemy => gameScreen.append(enemy.DOMElement))
+// allTowers.forEach(tower => gameScreen.append(tower.DOMElement))
 
 
 let count = 0
@@ -379,9 +403,7 @@ let gameLoop = setInterval(() => {
         // if (count % 30 === 0) {
         //         sendEnemy()
         // }
-        // if (count % 100 === 0) {
-        //         sendBullet()
-        // }
+
 
 
 }, 200)

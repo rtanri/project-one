@@ -40,14 +40,30 @@ body{
         /* border: 1px dashed black; */
 }
 
-.actived{
+.activedOne{
         opacity: 0.2;
         background-color:#eaeaea;
 }
 
-.actived:hover{
+.activedOne:hover{
         opacity: 0.8;
-        background-color: darkgoldenrod;
+        background: url("./assets/sme.png");
+        background-size: 60px;
+        background-repeat: no-repeat;
+        background-position: center;
+}
+
+.activedTwo{
+        opacity: 0.5;
+        background-color:#eaeaea;
+}
+
+.activedTwo:hover{
+        opacity: 0.8;
+        background: url("./assets/international.png");
+        background-size: 70px;
+        background-repeat: no-repeat;
+        background-position: center;
 }
 
 
@@ -61,10 +77,19 @@ body{
 }
 
 
-.towerDisplay{
-        height:90px;
-        width: 45px;
+.smallTowerDisplay{
+        height: 60px;
+        width: 60px;
         position: absolute;
+        margin-top: 10px;
+        margin-left: 20px;
+}
+
+.bigTowerDisplay{
+        height: 80px;
+        width: 80px;
+        position: absolute;
+        margin-top: 5px;
 }
 
 
@@ -87,7 +112,7 @@ body{
 }
 
 .towerButton{
-        padding: 0 20px;
+        padding: 0 10px;
         font-size: 20px;
         margin-right: 20px;
         height: 50px;
@@ -97,8 +122,8 @@ body{
 /* Enemy CSS */
 
 .enemy-char{
-        width: 44px;
-        height: 70px;
+        width: 60px;
+        height: 60px;
         position: absolute;
         margin-top: 10px;
         right: 0;
