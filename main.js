@@ -13,6 +13,12 @@ const randomValue = (inputArray) => {
         return inputArray[Math.floor(Math.random() * inputArray.length)]
 }
 
+// try to set id in each enemy, bullet, tower = 5 random digit
+const randomId = () => {
+        const randomNumber = Math.floor(Math.random() * 100000)
+        return randomNumber;
+}
+
 let gameScreen = document.getElementById("game-screen")
 
 function pause() {
@@ -42,15 +48,17 @@ function getAllLocations() {
                 // gameScreen.append(enemy.DOMElement)
                 console.log(bullet.getBounds())
         }
-
 }
+
 
 
 class GameObject {
         sprite;
         x;
         y;
-        DOMElement; // so called variable that editable 'objective'ly
+        DOMElement;
+        id;
+
 
         constructor(sprite, x, y) {
                 this.sprite = sprite
@@ -62,6 +70,7 @@ class GameObject {
                 this.DOMElement.style.position = "absolute"
                 this.DOMElement.style.left = this.x + "px"
                 this.DOMElement.style.top = this.y + "px"
+                this.id = randomId()
         }
 
         getBounds() {
@@ -110,7 +119,12 @@ class GameObject {
         get yBottomRight() {
                 return (this.getBounds().bottom)
         }
+
+        get id() {
+                return this.DOMElement.id
+        }
 }
+
 
 
 class Enemy extends GameObject {
@@ -187,6 +201,7 @@ class Bullet extends GameObject {
                 this.DOMElement.style.left = this.x + "px"
                 if (this.x >= 700) {
                         this.DOMElement.remove()
+
                 }
         }
 
@@ -279,19 +294,23 @@ class BigTower extends GameObject {
         }
 }
 
-
-// // ALL sendBullet() migrated to internal tower method
-
-
 // collide in between Enemy and bullet
 function afterCollision() {
         for (const enemy of allEnemies) {
                 for (const bullet of allBullets) {
                         if (enemy.collide(bullet) === true) {
                                 enemy.takeDamage(bullet)
+
+                                // delete this.bullet from allBullets array & DOMElement
                                 bullet.DOMElement.remove()
+                                let bulletIndex = allBullets.indexOf(bullet.id)
+                                allBullets.splice(bulletIndex, 1);
+
+                                // delete this.enemy from allEnemy array & DOMElement
                                 if (enemy.health === 0) {
                                         enemy.DOMElement.remove()
+                                        let enemyIndex = allEnemies.indexOf(enemy.id)
+                                        allEnemies.splice(enemyIndex, 1)
                                 }
                         }
                 }
@@ -300,20 +319,24 @@ function afterCollision() {
 
 
 // create Tower
-for (let i = 0; i < yCoordinate.length; i++) {
-        let company1 = new SmallTower(10, 10)
-        let company2 = new BigTower(10, 110)
-        let company3 = new SmallTower(10, 210)
-        allTowers.push(company1, company2, company3)
-        // allTowers.push(company1)
-}
+let company1 = new SmallTower(10, 10)
+let company2 = new BigTower(10, 110)
+let company3 = new SmallTower(10, 210)
+allTowers.push(company1, company2, company3)
 
+
+// create enemy
+let enemy1 = new Enemy(700, 10, 5)
+let enemy2 = new Enemy(700, 110, 5)
+let enemy3 = new Enemy(700, 210, 5)
+allEnemies.push(enemy1, enemy2, enemy3)
 
 
 // Appends all in gameScreen
-// allEnemies.forEach(enemy => gameScreen.append(enemy.DOMElement))
-// allBullets.forEach(bullet => gameScreen.append(bullet.DOMElement))
+allEnemies.forEach(enemy => gameScreen.append(enemy.DOMElement))
 allTowers.forEach(tower => gameScreen.append(tower.DOMElement))
+// allBullets.forEach(bullet => gameScreen.append(bullet.DOMElement))
+
 
 let count = 0
 // main game loop
@@ -322,18 +345,20 @@ let gameLoop = setInterval(() => {
         count += 1
 
         allEnemies.forEach(enemy => enemy.move())
+
         allBullets.forEach(bullet => bullet.move())
+
         allTowers.forEach(tower => tower.startCounting())
 
         for (const tower of allTowers) {
-                console.log(tower.internalCount)
-                if (tower.internalCount % 10 === 0) {
+                // console.log(tower.internalCount)
+                if (tower.internalCount % 1000 === 0) {
                         tower.sendBullet()
                 }
         }
 
         afterCollision();
-        // if (count % 80 === 0) {
+        // if (count % 30 === 0) {
         //         sendEnemy()
         // }
         // if (count % 100 === 0) {
@@ -449,6 +474,14 @@ let testingGround = document.getElementById("walking-test")
 // }
 // collision()
 
+
+// // Notes on deleting certain id
+// var index = allTowers.map(x => {return x.id}).indexOf(company1.id);
+// undefined
+// allTowers.splice(index, 1);
+// [SmallTower]
+// allTowers
+// (2) [BigTower, SmallTower]
 
 
 /* ========== Resources ========== */
