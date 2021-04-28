@@ -24,3 +24,6 @@ Player need to defeat all enemies and protect their safe zone (left side) by bui
 
 1. Test whole collision, removing enemies & bullets from array, and add +50 gold for each enemy died
 ![background](./assets/readme/addGold-and-remove-enemy-from-allEnemies.jpg)
+
+1. Add the tower by clicking the button, followed by clicking the colored-ground
+![background](./assets/readme/build-by-clicking.jpg)

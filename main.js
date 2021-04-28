@@ -490,18 +490,3 @@ window.onload = function () {}
 
 // 1. Mentor Minshan give great recommendation on choosing either in DOM JS or Canvas. I decided in DOM
 // 2. myMove() reference from: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_animate_3
-
-
-
-
-/* ========== Pseudo Code ========== */
-
-// 3.1. function to set tower by clicking button, append class: 'actived' to .towerGround <div>
-
-// 3.2. Click the <div> box to build tower in particular coordinate
-
-// 5. Pause all character speed
-
-// 6. Create collision function
-
-// 7. Set if enemy Health is Zero, add GOLD amount
