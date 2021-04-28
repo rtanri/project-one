@@ -4,6 +4,7 @@ console.log("JS Connected")
 const allEnemies = []
 const allTowers = []
 const allBullets = []
+let level = 1
 
 // these coordinates will be randomize
 const yCoordinate = [10, 110, 210]
@@ -336,6 +337,7 @@ class SmallTower extends GameObject {
         // sending 1 bullet
         className = "smallTowerDisplay"
         internalCount = 0
+        isCounting = true
 
         constructor(x, y) {
                 // to pull the constructor from parents
@@ -344,7 +346,13 @@ class SmallTower extends GameObject {
         }
 
         startCounting() {
-                this.internalCount++
+                if (this.isCounting === true) {
+                        this.internalCount++
+                }
+        }
+
+        switchCounting() {
+                return this.isCounting = !this.isCounting;
         }
 
 
@@ -358,7 +366,8 @@ class SmallTower extends GameObject {
 class BigTower extends GameObject {
         // sending 3 bullets 
         className = "bigTowerDisplay"
-        internalCount = 0;
+        internalCount = 0
+        isCounting = true
 
         constructor(x, y) {
                 // to pull the constructor from parents
@@ -367,7 +376,13 @@ class BigTower extends GameObject {
         }
 
         startCounting() {
-                this.internalCount++
+                if (this.isCounting === true) {
+                        this.internalCount++
+                }
+        }
+
+        switchCounting() {
+                return this.isCounting = !this.isCounting;
         }
 
         sendBullet() {
@@ -399,15 +414,47 @@ function afterCollision() {
         }
 }
 
-// // create enemy
-// let enemy1 = new Enemy(700, 10, 5)
-// let enemy2 = new Enemy(700, 110, 5)
-// let enemy3 = new Enemy(700, 210, 5)
-// allEnemies.push(enemy1, enemy2, enemy3)
+function summonEnemy(limit) {
+        let enemyCount = 0
+        var interval = setInterval(() => {
+                let student = new Enemy(700, randomValue(yCoordinate), 5)
+                allEnemies.push(student)
+                allEnemies.forEach(enemy => gameScreen.append(enemy.DOMElement))
+
+                enemyCount += 1
+
+                if (enemyCount === limit) {
+                        clearInterval(interval)
+                }
+        }, 3000);
+        enemyCount = 0;
+}
+
+function sendEnemy() {
+        console.log(`Level ${level} - Prepare for Incoming Students`)
+
+        if (level === 1) {
+                summonEnemy(5)
+                level += 1
+        } else if (level === 2) {
+                summonEnemy(10)
+                level += 1
+        } else if (level === 3) {
+                summonEnemy(20)
+                level = 1
+        }
 
 
-// // Appends all in gameScreen
-// allEnemies.forEach(enemy => gameScreen.append(enemy.DOMElement))
+}
+
+// waveEnd() need to be executed once allEnemies = []
+function waveEnd() {
+        console.log("waveEnd executed")
+        for (const tower of allTowers) {
+                tower.internalCount = 0
+                tower.switchCounting()
+        }
+}
 
 
 let count = 0
@@ -421,15 +468,14 @@ let gameLoop = setInterval(() => {
 
         for (const tower of allTowers) {
                 // console.log(tower.internalCount)
-                if (tower.internalCount % 20 === 0) {
+                if (tower.internalCount !== 0 && tower.internalCount % 20 === 0) {
                         tower.sendBullet()
                 }
         }
 
         afterCollision();
-        // if (count % 30 === 0) {
-        //         sendEnemy()
-        // }
+
+
 }, 200)
 
 
