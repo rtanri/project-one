@@ -40,6 +40,7 @@ body{
         /* border: 1px dashed black; */
 }
 
+
 .activedOne{
         opacity: 0.2;
         background-color:#eaeaea;
@@ -66,14 +67,36 @@ body{
         background-position: center;
 }
 
+.rejected{
+        opacity: 0.5;
+        background-color: red;
+        content: "Need Gold"
+}
+
+.buildSmallTower{
+        background: url("./assets/sme.png");
+        background-size: 60px;
+        background-repeat: no-repeat;
+        background-position: center;
+}
+
+.buildBigTower{
+        background: url("./assets/international.png");
+        background-size: 70px;
+        background-repeat: no-repeat;
+        background-position: center;
+}
+
+
+
+
 
 /* Tower and bullet */
 .bulletDisplay{
         height: 25px;
         width: 25px;
         position: absolute;
-        margin-top: 20px;
-        left: 50px;
+        margin-top: 35px;
 }
 
 

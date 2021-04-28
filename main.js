@@ -7,13 +7,13 @@ const allBullets = []
 
 // these coordinates will be randomize
 const yCoordinate = [10, 110, 210]
-const yCoordinateBullet = [10, 110, 210] //for testing
+
+let goldValue = parseInt(document.getElementById("gold").innerText)
 
 const randomValue = (inputArray) => {
         return inputArray[Math.floor(Math.random() * inputArray.length)]
 }
 
-// try to set id in each enemy, bullet, tower = 5 random digit
 const randomId = () => {
         const randomNumber = Math.floor(Math.random() * 100000)
         return randomNumber;
@@ -41,11 +41,9 @@ function start() {
 
 function getAllLocations() {
         for (const enemy of allEnemies) {
-                // gameScreen.append(enemy.DOMElement)
                 console.log(enemy.getBounds())
         }
         for (const bullet of allBullets) {
-                // gameScreen.append(enemy.DOMElement)
                 console.log(bullet.getBounds())
         }
 }
@@ -56,12 +54,11 @@ function removeFromArray(parentArray, DOMElement, uniqueId) {
         let index = parentArray.map(x => {
                 return x.id
         }).indexOf(uniqueId)
-        // console.log(index) // this show correct index
         parentArray.splice(index, 1);
 }
 
 function editGold(num) {
-        let goldValue = parseInt(document.getElementById("gold").innerText)
+
         goldValue = (goldValue + num)
 
         if (goldValue < 0) return
@@ -69,31 +66,84 @@ function editGold(num) {
         document.getElementById("gold").innerText = goldValue
 }
 
+function actionRejected(location, initialClass) {
+        location.classList.replace(initialClass, "rejected")
+
+        setTimeout(function () {
+                location.classList.remove("rejected")
+        }, 200)
+}
+
+
+
+
 function buildSmallTower() {
         let selectedGround = document.getElementsByClassName("towerGround")
-        console.log(selectedGround)
         for (const square of selectedGround) {
                 square.classList.add("activedOne")
                 square.addEventListener("click", (e) => {
-                        let xPoint = Math.floor(e.screenX)
-                        let yPoint = Math.floor(e.screenY)
-                        console.log(`Build Tower 1 in (x,y): ${xPoint},${yPoint}`)
+                        // tower coordinate in each div box
+                        let xTower = e.target.offsetLeft + e.target.offsetWidth / 2
+                        let yTower = e.target.offsetTop
+
+                        if (goldValue < 80) {
+                                actionRejected(e.target, "activedOne")
+                                for (const ground of selectedGround) {
+                                        ground.classList.remove("activedOne")
+                                }
+                                return console.log("Sorry, you need more gold")
+                        } else if (e.target.classList.contains("buildSmallTower") || e.target.classList.contains("buildBigTower")) {
+                                // actionRejected(e.target, "buildSmallTower")
+                                return console.log("Cannot build tower here")
+                        } else {
+                                editGold(-80)
+                                e.target.classList.add("buildSmallTower")
+
+                                let oneSmallTower = new SmallTower(xTower, yTower)
+                                allTowers.push(oneSmallTower)
+                                for (const ground of selectedGround) {
+                                        ground.classList.remove("activedOne")
+                                }
+                                return console.log("Building small tower")
+                        }
+
                 })
         }
 }
 
 function buildBigTower() {
         let selectedGround = document.getElementsByClassName("towerGround")
-        console.log(selectedGround)
         for (const square of selectedGround) {
                 square.classList.add("activedTwo")
                 square.addEventListener("click", (e) => {
-                        let xPoint = Math.floor(e.screenX)
-                        let yPoint = Math.floor(e.screenY)
-                        console.log(`Build Tower 2 in (x,y): ${xPoint},${yPoint}`)
+                        // tower coordinate in each div box
+                        let xTower = e.target.offsetLeft + e.target.offsetWidth / 2
+                        let yTower = e.target.offsetTop
+
+                        if (goldValue < 200) {
+                                actionRejected(e.target, "activedTwo")
+                                for (const ground of selectedGround) {
+                                        ground.classList.remove("activedTwo")
+                                }
+                                return console.log("Sorry, you need more gold")
+                        } else if (e.target.classList.contains("buildSmallTower") || e.target.classList.contains("buildBigTower")) {
+                                return console.log("Cannot build tower here")
+                        } else {
+                                editGold(-200)
+                                e.target.classList.add("buildBigTower")
+
+                                let tower = new BigTower(xTower, yTower)
+                                allTowers.push(tower)
+                                for (const ground of selectedGround) {
+                                        ground.classList.remove("activedTwo")
+                                }
+                                return console.log("Building big tower")
+                        }
                 })
         }
 }
+
+
 
 class GameObject {
         sprite;
@@ -101,7 +151,6 @@ class GameObject {
         y;
         DOMElement;
         id;
-
 
         constructor(sprite, x, y) {
                 this.sprite = sprite
@@ -196,10 +245,8 @@ class Enemy extends GameObject {
                 return this.health -= thing.damage
         }
 
+        // in this function = 'thing' is bullet, and when enemy health is 0 remove it from allEnemies[]
         collide(thing) {
-                // in this function = 'thing' is bullet
-                // if enemy health is 0, remove from game Screen
-
                 // bullet top Right-Corner hit Enemy's Front Side
                 if (this.xTopLeft < thing.xTopRight) {
                         if (this.yTopLeft < thing.yTopRight && this.yBottomLeft > thing.yTopRight) {
@@ -302,7 +349,7 @@ class SmallTower extends GameObject {
 
 
         sendBullet() {
-                let interview = new Bullet(80, this.y, 10)
+                let interview = new Bullet(this.x, this.y, 10)
                 allBullets.push(interview)
                 allBullets.forEach(bullet => gameScreen.append(bullet.DOMElement))
         }
@@ -324,9 +371,9 @@ class BigTower extends GameObject {
         }
 
         sendBullet() {
-                let interview = new Bullet(80, this.y, 10)
-                let interview2 = new UpDiagonalBullet(80, this.y, 10)
-                let interview3 = new DownDiagonalBullet(80, this.y, 10)
+                let interview = new Bullet(this.x, this.y, 10)
+                let interview2 = new UpDiagonalBullet(this.x, this.y, 10)
+                let interview3 = new DownDiagonalBullet(this.x, this.y, 10)
                 allBullets.push(interview)
                 allBullets.push(interview2)
                 allBullets.push(interview3)
@@ -341,18 +388,9 @@ function afterCollision() {
                 for (const bullet of allBullets) {
                         if (enemy.collide(bullet) === true) {
                                 enemy.takeDamage(bullet)
-
-                                // // delete this.bullet from allBullets array & DOMElement
-                                // bullet.DOMElement.remove()
-                                // let bulletIndex = allBullets.indexOf(bullet.id)
-                                // allBullets.splice(bulletIndex, 1);
                                 removeFromArray(allBullets, bullet.DOMElement, bullet.id)
 
-                                // delete this.enemy from allEnemy array & DOMElement
                                 if (enemy.health === 0) {
-                                        // enemy.DOMElement.remove()
-                                        // let enemyIndex = allEnemies.indexOf(enemy.id)
-                                        // allEnemies.splice(enemyIndex, 1)
                                         removeFromArray(allEnemies, enemy.DOMElement, enemy.id)
                                         editGold(50)
                                 }
@@ -360,13 +398,6 @@ function afterCollision() {
                 }
         }
 }
-
-
-// // create Tower
-// let company1 = new SmallTower(10, 10)
-// let company2 = new BigTower(10, 110)
-// let company3 = new SmallTower(10, 210)
-// allTowers.push(company1, company2, company3)
 
 // // create enemy
 // let enemy1 = new Enemy(700, 10, 5)
@@ -377,7 +408,6 @@ function afterCollision() {
 
 // // Appends all in gameScreen
 // allEnemies.forEach(enemy => gameScreen.append(enemy.DOMElement))
-// allTowers.forEach(tower => gameScreen.append(tower.DOMElement))
 
 
 let count = 0
@@ -385,11 +415,8 @@ let count = 0
 let gameLoop = setInterval(() => {
 
         count += 1
-
         allEnemies.forEach(enemy => enemy.move())
-
         allBullets.forEach(bullet => bullet.move())
-
         allTowers.forEach(tower => tower.startCounting())
 
         for (const tower of allTowers) {
@@ -403,123 +430,14 @@ let gameLoop = setInterval(() => {
         // if (count % 30 === 0) {
         //         sendEnemy()
         // }
-
-
-
 }, 200)
 
 
-window.onload = function () {
+window.onload = function () {}
 
-
-}
-
-/* ========== Code in Testing Ground ========== */
-let testingGround = document.getElementById("walking-test")
-
-// error: the removed bullet that has collide the Enemy, continue to give damage to enemy when the allBullet recalled again.
-// solution: we need to splice the out-of-bound bullet from allBullets array -- need to set the function when bullet first created
 
 /* ============= Archived ============= */
 
-// // 1. Tower Object
-// class Tower {
-//         name = ""
-//         shoot() {
-//                 console.log("throw bullet")
-//         }
-
-//         constructor(name) {
-//                 this.name = name;
-//         }
-// }
-
-// class SmallTower extends Tower {
-//         shootingDamage = 2
-//         price = 25
-
-//         getDamage() {
-//                 return this.shootingDamage
-//         }
-
-//         printName() {
-//                 console.log("This is small tower")
-//         }
-
-//         constructor(name, shootingDamage, price) {
-//                 super(name)
-//                 this.price = price
-//                 this.shootingDamage = shootingDamage
-//         }
-// }
-// // create Unilever as Small Tower
-// let uniqlo = new SmallTower("Uniqlo", 2, 25)
-
-
-// class BigTower extends Tower {
-//         shootingDamage = 5
-//         price = 45
-
-//         getDamage() {
-//                 return this.shootingDamage
-//         }
-
-//         printName() {
-//                 console.log("This is big tower")
-//         }
-
-//         constructor(name, shootingDamage, price) {
-//                 super(name)
-//                 this.price = price
-//                 this.shootingDamage = shootingDamage
-//         }
-// }
-// // create Apple as Big Tower
-// let apple = new BigTower("Apple", 5, 45)
-
-// function summonEnemy(limit) {
-//         console.log("enemy btn clicked")
-
-//         let enemyCount = 0
-//         var interval = setInterval(() => {
-
-//                 let student = new Enemy("Normal Student")
-//                 allEnemies.push(student)
-//                 // student.createEnemy(randomValue(spawnLocation))
-//                 console.log(allEnemies)
-//                 enemyCount += 1
-
-//                 if (enemyCount === limit) {
-//                         clearInterval(interval);
-//                 }
-//         }, 500);
-//         renderObject()
-//         enemyCount = 0;
-// }
-
-// code graveyard - trying to code collission
-// function collision() {
-//         for (const bullet of allBullets) {
-//                 for (const enemy of allEnemies) {
-//                         bulletMostRightDimension = bullet.getBounds().x + 20
-//                         enemyMostLeftDimension = enemy.getBounds().x - 22
-
-//                         if (bulletMostRightDimension >= enemyMostLeftDimension) {
-//                                 console.log("it is collide")
-//                         }
-//                 }
-//         }
-// }
-// collision()
-
-
-// // Notes on deleting certain id
-// var index = allTowers.map(x => {return x.id}).indexOf(company1.id);
-// undefined
-// allTowers.splice(index, 1);
-// [SmallTower]
-// allTowers
-// (2) [BigTower, SmallTower]
 
 
 /* ========== Resources ========== */
