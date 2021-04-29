@@ -5,6 +5,7 @@ const allEnemies = []
 const allTowers = []
 const allBullets = []
 let level = 1
+let isStarting = false;
 
 // these coordinates will be randomize
 const yCoordinate = [10, 110, 210]
@@ -237,8 +238,10 @@ class Enemy extends GameObject {
         move() {
                 this.x -= this.speed
                 this.DOMElement.style.left = this.x + "px"
-                if (this.x <= 0) {
+                if (this.x <= -50) {
                         this.speed = 0
+                        removeFromArray(allEnemies, this.DOMElement, this.id)
+                        editGold(-50)
                 }
         }
 
@@ -450,32 +453,57 @@ function sendEnemy() {
 // waveEnd() need to be executed once allEnemies = []
 function waveEnd() {
         console.log("waveEnd executed")
+        isStarting = false
         for (const tower of allTowers) {
                 tower.internalCount = 0
-                tower.switchCounting()
+
         }
+
 }
 
+
+function gameStart() {
+        console.log("Game Start")
+        count += 1
+        for (const tower of allTowers) {
+                tower.internalCount = 0
+                if (tower.isCounting === false) {
+                        tower.switchCounting()
+                }
+        }
+        isStarting = !isStarting
+        console.log(isStarting)
+        if (isStarting === true) {
+                sendEnemy()
+        }
+
+}
+
+
+function renderGameObjects() {
+        allEnemies.forEach(enemy => enemy.move())
+        allBullets.forEach(bullet => bullet.move())
+        allTowers.forEach(tower => tower.startCounting())
+}
+
+function towerIntervalStart() {
+        if (isStarting === true) {
+                for (const tower of allTowers) {
+                        // console.log(tower.internalCount)
+                        if (tower.internalCount !== 0 && tower.internalCount % 20 === 0) {
+                                tower.sendBullet()
+                        }
+                }
+        }
+
+}
 
 let count = 0
 // main game loop
 let gameLoop = setInterval(() => {
-
-        count += 1
-        allEnemies.forEach(enemy => enemy.move())
-        allBullets.forEach(bullet => bullet.move())
-        allTowers.forEach(tower => tower.startCounting())
-
-        for (const tower of allTowers) {
-                // console.log(tower.internalCount)
-                if (tower.internalCount !== 0 && tower.internalCount % 20 === 0) {
-                        tower.sendBullet()
-                }
-        }
-
+        renderGameObjects()
+        towerIntervalStart()
         afterCollision();
-
-
 }, 200)
 
 
