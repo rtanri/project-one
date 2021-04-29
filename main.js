@@ -8,6 +8,7 @@ let level = 1
 let isStarting = false;
 let waveDuration = 0
 
+
 // these coordinates will be randomize
 const yCoordinate = [10, 110, 210]
 
@@ -79,70 +80,57 @@ function actionRejected(location, initialClass) {
 
 
 
-
 function buildSmallTower() {
+        clearEventListener("towerGround", constructBigTower)
         let selectedGround = document.getElementsByClassName("towerGround")
         for (const square of selectedGround) {
                 square.classList.add("activedOne")
-                square.addEventListener("click", (e) => {
-                        // tower coordinate in each div box
-                        let xTower = e.target.offsetLeft + e.target.offsetWidth / 2
-                        let yTower = e.target.offsetTop
+                square.addEventListener("click", constructNewTower)
+        }
+}
 
-                        if (goldValue < 80) {
-                                actionRejected(e.target, "activedOne")
-                                for (const ground of selectedGround) {
-                                        ground.classList.remove("activedOne")
-                                }
-                                return console.log("Sorry, you need more gold")
-                        } else if (e.target.classList.contains("buildSmallTower") || e.target.classList.contains("buildBigTower")) {
-                                // actionRejected(e.target, "buildSmallTower")
-                                return console.log("Cannot build tower here")
-                        } else {
-                                editGold(-80)
-                                e.target.classList.add("buildSmallTower")
+function constructNewTower(e) {
+        let selectedGround = document.getElementsByClassName("towerGround")
+        // tower coordinate in each div box
+        let xTower = e.target.offsetLeft + e.target.offsetWidth / 2
+        let yTower = e.target.offsetTop
 
-                                let oneSmallTower = new SmallTower(xTower, yTower)
-                                allTowers.push(oneSmallTower)
-                                for (const ground of selectedGround) {
-                                        ground.classList.remove("activedOne")
-                                }
-                                return console.log("Building small tower")
-                        }
+        if (goldValue < 80) {
+                actionRejected(e.target, "activedOne")
+                for (const ground of selectedGround) {
+                        ground.classList.remove("activedOne")
+                }
+                return console.log("Sorry, you need more gold")
+        } else if (e.target.classList.contains("buildSmallTower") || e.target.classList.contains("buildBigTower")) {
+                // actionRejected(e.target, "buildSmallTower")
+                return console.log("Cannot build tower here")
+        } else {
+                editGold(-80)
+                e.target.classList.add("buildSmallTower")
 
-                })
+                let oneSmallTower = new SmallTower(xTower, yTower)
+                allTowers.push(oneSmallTower)
+                for (const ground of selectedGround) {
+                        ground.classList.remove("activedOne")
+                }
+                return console.log("Building small tower")
+        }
+}
+
+function clearEventListener(className, callback) {
+        // find all element with className, then remove the callback name on this element
+        let elements = document.getElementsByClassName(className)
+        for (const element of elements) {
+                element.removeEventListener("click", callback)
         }
 }
 
 function buildBigTower() {
+        clearEventListener("towerGround", constructNewTower)
         let selectedGround = document.getElementsByClassName("towerGround")
         for (const square of selectedGround) {
                 square.classList.add("activedTwo")
-                square.addEventListener("click", (e) => {
-                        // tower coordinate in each div box
-                        let xTower = e.target.offsetLeft + e.target.offsetWidth / 2
-                        let yTower = e.target.offsetTop
-
-                        if (goldValue < 200) {
-                                actionRejected(e.target, "activedTwo")
-                                for (const ground of selectedGround) {
-                                        ground.classList.remove("activedTwo")
-                                }
-                                return console.log("Sorry, you need more gold")
-                        } else if (e.target.classList.contains("buildSmallTower") || e.target.classList.contains("buildBigTower")) {
-                                return console.log("Cannot build tower here")
-                        } else {
-                                editGold(-200)
-                                e.target.classList.add("buildBigTower")
-
-                                let tower = new BigTower(xTower, yTower)
-                                allTowers.push(tower)
-                                for (const ground of selectedGround) {
-                                        ground.classList.remove("activedTwo")
-                                }
-                                return console.log("Building big tower")
-                        }
-                })
+                square.addEventListener("click", constructBigTower)
         }
 }
 
@@ -424,12 +412,41 @@ class BigTower extends GameObject {
         }
 }
 
+function constructBigTower(e) {
+        let selectedGround = document.getElementsByClassName("towerGround")
+        // tower coordinate in each div box
+        let xTower = e.target.offsetLeft + e.target.offsetWidth / 2
+        let yTower = e.target.offsetTop
+
+        if (goldValue < 200) {
+                actionRejected(e.target, "activedTwo")
+                for (const ground of selectedGround) {
+                        ground.classList.remove("activedTwo")
+                }
+                return console.log("Sorry, you need more gold")
+        } else if (e.target.classList.contains("buildSmallTower") || e.target.classList.contains("buildBigTower")) {
+                return console.log("Cannot build tower here")
+        } else {
+                editGold(-200)
+                e.target.classList.add("buildBigTower")
+
+                let tower = new BigTower(xTower, yTower)
+                allTowers.push(tower)
+                for (const ground of selectedGround) {
+                        ground.classList.remove("activedTwo")
+                }
+                return console.log("Building big tower")
+        }
+
+}
+
 // collide in between Enemy and bullet
 function afterCollision() {
         for (const enemy of allEnemies) {
                 for (const bullet of allBullets) {
                         if (enemy.collide(bullet) === true) {
                                 enemy.takeDamage(bullet)
+                                // console.log(enemy.health)
                                 removeFromArray(allBullets, bullet.DOMElement, bullet.id)
 
                                 if (enemy.health === 0) {
@@ -443,9 +460,14 @@ function afterCollision() {
 
 function summonEnemy(limit, type, speed) {
         let enemyCount = 0
+        let jobHunter;
         var interval = setInterval(() => {
-                let student = new type(700, randomValue(yCoordinate), speed)
-                allEnemies.push(student)
+                if (type === Boss) {
+                        jobHunter = new type(700, 110, speed)
+                } else {
+                        jobHunter = new type(700, randomValue(yCoordinate), speed)
+                }
+                allEnemies.push(jobHunter)
                 allEnemies.forEach(enemy => gameScreen.append(enemy.DOMElement))
 
                 enemyCount += 1
@@ -459,7 +481,7 @@ function summonEnemy(limit, type, speed) {
 
 function sendEnemy() {
         if (allBullets.length === 0) {
-                console.log(`Level ${level} - Prepare for Incoming Students`)
+                console.log(`Level ${level} - Prepare for Incoming Job Hunters`)
 
                 if (level === 1) {
                         summonEnemy(5, Enemy, 5)
@@ -469,8 +491,7 @@ function sendEnemy() {
                         level += 1
                 } else if (level === 3) {
                         summonEnemy(1, Boss, 2)
-                        level = 1
-                        console.log("Congratulations, everyone got a job!! Thank you got playing")
+                        level += 1
                 }
         }
 }
@@ -482,14 +503,10 @@ function waveEnd() {
         waveDuration = 0;
         for (const tower of allTowers) {
                 tower.internalCount = 0
-
         }
-
+        gameEnd()
 }
 
-// function gameTiming() {
-//         waveDuration++
-// }
 
 function gameStart() {
         console.log("Game Start")
@@ -537,6 +554,13 @@ function checkingAllEnemies() {
         return
 }
 
+function gameEnd() {
+        if (level === 4) {
+                console.log("Congrats you win the game!")
+        } else {
+                console.log("You finish this level, prepare for next level")
+        }
+}
 
 // main game loop
 let gameLoop = setInterval(() => {
