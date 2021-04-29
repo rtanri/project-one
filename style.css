@@ -67,10 +67,19 @@ body{
         background-position: center;
 }
 
+.demolishTower{
+        opacity: 0.2;
+        background-color:#eaeaea;
+}
+
+.demolishTower:hover{
+        opacity: 0.8;
+        background-color: red;
+}
+
 .rejected{
         opacity: 0.5;
         background-color: red;
-        content: "Need Gold"
 }
 
 .buildSmallTower{
@@ -136,9 +145,45 @@ body{
 
 .towerButton{
         padding: 0 10px;
+        cursor: pointer;
         font-size: 20px;
         margin-right: 20px;
         height: 50px;
+        box-shadow: 10px;
+        border: none;
+        background-color: #04AA6D;
+        box-shadow: 0 5px #999;
+        border-radius: 10px;
+        outline: none;
+}
+
+
+.towerButton:active {
+        background-color: #3e8e41;
+        box-shadow: 0 5px #666;
+        transform: translateY(4px);
+}
+
+#send-enemy{
+        background-color: #ff8303;
+}
+
+#send-enemy:active{
+        background-color: #ff5200;
+}
+
+#delete-tower-button{
+        background-color: #d8ac9c;
+}
+
+#delete-tower-button:active{
+        background-color: #845460;
+        box-shadow: 0 5px #666;
+}
+
+.smallIcon{
+        height: 30px;
+        width: 30px;
 }
 
 

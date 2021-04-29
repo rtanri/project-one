@@ -1,18 +1,20 @@
 console.log("JS Connected")
 
-// Create empty array for enemy, tower, bullet
+/* ======== Global Array and Variable ======== */
+
 const allEnemies = []
 const allTowers = []
 const allBullets = []
+const yCoordinate = [10, 110, 210]
 let level = 1
 let isStarting = false;
 let waveDuration = 0
-
-
-// these coordinates will be randomize
-const yCoordinate = [10, 110, 210]
-
+let gameScreen = document.getElementById("game-screen")
 let goldValue = parseInt(document.getElementById("gold").innerText)
+let selectedGround = document.getElementsByClassName("towerGround")
+
+
+/* ======== Global Reusable Functions ======== */
 
 const randomValue = (inputArray) => {
         return inputArray[Math.floor(Math.random() * inputArray.length)]
@@ -21,26 +23,6 @@ const randomValue = (inputArray) => {
 const randomId = () => {
         const randomNumber = Math.floor(Math.random() * 100000)
         return randomNumber;
-}
-
-let gameScreen = document.getElementById("game-screen")
-
-function pause() {
-        for (const enemy of allEnemies) {
-                enemy.speed = 0;
-        }
-        for (const bullet of allBullets) {
-                bullet.speed = 0;
-        }
-}
-
-function start() {
-        for (const enemy of allEnemies) {
-                enemy.speed = 10;
-        }
-        for (const bullet of allBullets) {
-                bullet.speed = 10;
-        }
 }
 
 function getAllLocations() {
@@ -52,7 +34,6 @@ function getAllLocations() {
         }
 }
 
-
 function removeFromArray(parentArray, DOMElement, uniqueId) {
         DOMElement.remove()
         let index = parentArray.map(x => {
@@ -62,35 +43,37 @@ function removeFromArray(parentArray, DOMElement, uniqueId) {
 }
 
 function editGold(num) {
-
         goldValue = (goldValue + num)
-
         if (goldValue < 0) return
-
         document.getElementById("gold").innerText = goldValue
 }
 
 function actionRejected(location, initialClass) {
         location.classList.replace(initialClass, "rejected")
-
         setTimeout(function () {
                 location.classList.remove("rejected")
         }, 200)
 }
 
+/* ======== Build and Demolish Towers ======== */
 
-
-function buildSmallTower() {
-        clearEventListener("towerGround", constructBigTower)
-        let selectedGround = document.getElementsByClassName("towerGround")
-        for (const square of selectedGround) {
-                square.classList.add("activedOne")
-                square.addEventListener("click", constructNewTower)
+function clearEventListener(className, callback) {
+        // find all element with className, then remove the callback name on this element
+        let elements = document.getElementsByClassName(className)
+        for (const element of elements) {
+                element.removeEventListener("click", callback)
         }
 }
 
-function constructNewTower(e) {
-        let selectedGround = document.getElementsByClassName("towerGround")
+function buildSmallTower() {
+        clearEventListener("towerGround", constructBigTower)
+        for (const square of selectedGround) {
+                square.classList.add("activedOne")
+                square.addEventListener("click", constructSmallTower)
+        }
+}
+
+function constructSmallTower(e) {
         // tower coordinate in each div box
         let xTower = e.target.offsetLeft + e.target.offsetWidth / 2
         let yTower = e.target.offsetTop
@@ -117,24 +100,65 @@ function constructNewTower(e) {
         }
 }
 
-function clearEventListener(className, callback) {
-        // find all element with className, then remove the callback name on this element
-        let elements = document.getElementsByClassName(className)
-        for (const element of elements) {
-                element.removeEventListener("click", callback)
-        }
-}
-
 function buildBigTower() {
-        clearEventListener("towerGround", constructNewTower)
-        let selectedGround = document.getElementsByClassName("towerGround")
+        clearEventListener("towerGround", constructSmallTower)
         for (const square of selectedGround) {
                 square.classList.add("activedTwo")
                 square.addEventListener("click", constructBigTower)
         }
 }
 
+function constructBigTower(e) {
+        // tower coordinate in each div box
+        let xTower = e.target.offsetLeft + e.target.offsetWidth / 2
+        let yTower = e.target.offsetTop
 
+        if (goldValue < 200) {
+                actionRejected(e.target, "activedTwo")
+                for (const ground of selectedGround) {
+                        ground.classList.remove("activedTwo")
+                }
+                return console.log("Sorry, you need more gold")
+        } else if (e.target.classList.contains("buildSmallTower") || e.target.classList.contains("buildBigTower")) {
+                return console.log("Cannot build tower here")
+        } else {
+                editGold(-200)
+                e.target.classList.add("buildBigTower")
+
+                let tower = new BigTower(xTower, yTower)
+                allTowers.push(tower)
+                for (const ground of selectedGround) {
+                        ground.classList.remove("activedTwo")
+                }
+                return console.log("Building big tower")
+        }
+}
+
+function deleteTower() {
+        clearEventListener("towerGround", constructSmallTower)
+        clearEventListener("towerGround", constructBigTower)
+        for (const square of selectedGround) {
+                square.classList.add("demolishTower")
+                square.addEventListener("click", demolish)
+        }
+}
+
+function demolish(e) {
+        if (e.target.classList.contains("buildSmallTower")) {
+                e.target.setAttribute("class", "towerGround")
+                editGold(+50)
+                console.log("Small tower is deleted")
+        } else if (e.target.classList.contains("buildBigTower")) {
+                e.target.setAttribute("class", "towerGround")
+                editGold(+110)
+                console.log("Big tower is deleted")
+        }
+        for (const square of selectedGround) {
+                square.classList.remove("demolishTower")
+        }
+}
+
+/* ======== Object Class: GameObject, Enemy, Tower, Bullets ======== */
 
 class GameObject {
         sprite;
@@ -169,9 +193,7 @@ class GameObject {
                 return this.getBounds().height
         }
 
-        // coordinate each corner
-
-        // 1. Top Left v
+        // 1. Top Left coordinate
         get xTopLeft() {
                 return (this.getBounds().left)
         }
@@ -179,7 +201,7 @@ class GameObject {
                 return (this.getBounds().top)
         }
 
-        // 2. Bottom Left v
+        // 2. Bottom Left coordinate
         get xBottomLeft() {
                 return (this.getBounds().left)
         }
@@ -187,7 +209,7 @@ class GameObject {
                 return (this.getBounds().bottom)
         }
 
-        // 3. Top Right v
+        // 3. Top Right coordinate
         get xTopRight() {
                 return (this.getBounds().right)
         }
@@ -195,7 +217,7 @@ class GameObject {
                 return (this.getBounds().top)
         }
 
-        // 4. Bottom Right v
+        // 4. Bottom Right coordinate
         get xBottomRight() {
                 return (this.getBounds().right)
         }
@@ -272,8 +294,8 @@ class Boss extends Enemy {
         className = "boss-char"
         sprite = "./assets/confused-man.png"
 
-        constructor(x, y, speed) {
-                super(x, y, speed)
+        constructor(x, speed) {
+                super(x, 110, speed)
                 this.DOMElement.setAttribute("src", this.sprite)
                 this.DOMElement.setAttribute("class", this.className)
         }
@@ -412,33 +434,6 @@ class BigTower extends GameObject {
         }
 }
 
-function constructBigTower(e) {
-        let selectedGround = document.getElementsByClassName("towerGround")
-        // tower coordinate in each div box
-        let xTower = e.target.offsetLeft + e.target.offsetWidth / 2
-        let yTower = e.target.offsetTop
-
-        if (goldValue < 200) {
-                actionRejected(e.target, "activedTwo")
-                for (const ground of selectedGround) {
-                        ground.classList.remove("activedTwo")
-                }
-                return console.log("Sorry, you need more gold")
-        } else if (e.target.classList.contains("buildSmallTower") || e.target.classList.contains("buildBigTower")) {
-                return console.log("Cannot build tower here")
-        } else {
-                editGold(-200)
-                e.target.classList.add("buildBigTower")
-
-                let tower = new BigTower(xTower, yTower)
-                allTowers.push(tower)
-                for (const ground of selectedGround) {
-                        ground.classList.remove("activedTwo")
-                }
-                return console.log("Building big tower")
-        }
-
-}
 
 // collide in between Enemy and bullet
 function afterCollision() {
@@ -458,12 +453,14 @@ function afterCollision() {
         }
 }
 
+/* ========= Sending Enemy: Level 1, 2, Boss ========= */
+
 function summonEnemy(limit, type, speed) {
         let enemyCount = 0
         let jobHunter;
         var interval = setInterval(() => {
                 if (type === Boss) {
-                        jobHunter = new type(700, 110, speed)
+                        jobHunter = new type(700, speed)
                 } else {
                         jobHunter = new type(700, randomValue(yCoordinate), speed)
                 }
@@ -484,6 +481,7 @@ function sendEnemy() {
                 console.log(`Level ${level} - Prepare for Incoming Job Hunters`)
 
                 if (level === 1) {
+                        // summonEnemy(1, Boss, 2)
                         summonEnemy(5, Enemy, 5)
                         level += 1
                 } else if (level === 2) {
@@ -574,5 +572,26 @@ let gameLoop = setInterval(() => {
 
 /* ========== Resources ========== */
 
-// 1. Mentor Minshan give great recommendation on choosing either in DOM JS or Canvas. I decided in DOM
+// 1. Mentor Min Shan give great recommendation on choosing either in DOM JS or Canvas. I decided in DOM
 // 2. myMove() reference from: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_animate_3
+
+
+/* ========== Archived ========== */
+
+// function pause() {
+//         for (const enemy of allEnemies) {
+//                 enemy.speed = 0;
+//         }
+//         for (const bullet of allBullets) {
+//                 bullet.speed = 0;
+//         }
+// }
+
+// function start() {
+//         for (const enemy of allEnemies) {
+//                 enemy.speed = 10;
+//         }
+//         for (const bullet of allBullets) {
+//                 bullet.speed = 10;
+//         }
+// }
