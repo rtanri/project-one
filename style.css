@@ -152,6 +152,14 @@ body{
         right: 0;
 }
 
+.boss-char{
+        width: 150px;
+        height: 150px;
+        position: absolute;
+        margin-top: 10px;
+        right: 0;
+}
+
 
 
 /* Testing Ground CSS */

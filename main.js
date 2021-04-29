@@ -6,6 +6,7 @@ const allTowers = []
 const allBullets = []
 let level = 1
 let isStarting = false;
+let waveDuration = 0
 
 // these coordinates will be randomize
 const yCoordinate = [10, 110, 210]
@@ -278,6 +279,29 @@ class Enemy extends GameObject {
         }
 }
 
+class Boss extends Enemy {
+        health = 200
+        className = "boss-char"
+        sprite = "./assets/confused-man.png"
+
+        constructor(x, y, speed) {
+                super(x, y, speed)
+                this.DOMElement.setAttribute("src", this.sprite)
+                this.DOMElement.setAttribute("class", this.className)
+        }
+
+        move() {
+                this.x -= this.speed
+                this.DOMElement.style.left = this.x + "px"
+                if (this.x <= -50) {
+                        this.speed = 0
+                        removeFromArray(allEnemies, this.DOMElement, this.id)
+                        editGold(-200)
+                }
+        }
+
+}
+
 class Bullet extends GameObject {
         speed;
         className = "bulletDisplay";
@@ -417,10 +441,10 @@ function afterCollision() {
         }
 }
 
-function summonEnemy(limit) {
+function summonEnemy(limit, type, speed) {
         let enemyCount = 0
         var interval = setInterval(() => {
-                let student = new Enemy(700, randomValue(yCoordinate), 5)
+                let student = new type(700, randomValue(yCoordinate), speed)
                 allEnemies.push(student)
                 allEnemies.forEach(enemy => gameScreen.append(enemy.DOMElement))
 
@@ -434,26 +458,28 @@ function summonEnemy(limit) {
 }
 
 function sendEnemy() {
-        console.log(`Level ${level} - Prepare for Incoming Students`)
+        if (allBullets.length === 0) {
+                console.log(`Level ${level} - Prepare for Incoming Students`)
 
-        if (level === 1) {
-                summonEnemy(5)
-                level += 1
-        } else if (level === 2) {
-                summonEnemy(10)
-                level += 1
-        } else if (level === 3) {
-                summonEnemy(20)
-                level = 1
+                if (level === 1) {
+                        summonEnemy(5, Enemy, 5)
+                        level += 1
+                } else if (level === 2) {
+                        summonEnemy(15, Enemy, 5)
+                        level += 1
+                } else if (level === 3) {
+                        summonEnemy(1, Boss, 2)
+                        level = 1
+                        console.log("Congratulations, everyone got a job!! Thank you got playing")
+                }
         }
-
-
 }
 
 // waveEnd() need to be executed once allEnemies = []
 function waveEnd() {
         console.log("waveEnd executed")
         isStarting = false
+        waveDuration = 0;
         for (const tower of allTowers) {
                 tower.internalCount = 0
 
@@ -461,10 +487,13 @@ function waveEnd() {
 
 }
 
+// function gameTiming() {
+//         waveDuration++
+// }
 
 function gameStart() {
         console.log("Game Start")
-        count += 1
+        waveDuration += 1
         for (const tower of allTowers) {
                 tower.internalCount = 0
                 if (tower.isCounting === false) {
@@ -490,7 +519,7 @@ function towerIntervalStart() {
         if (isStarting === true) {
                 for (const tower of allTowers) {
                         // console.log(tower.internalCount)
-                        if (tower.internalCount !== 0 && tower.internalCount % 20 === 0) {
+                        if (tower.internalCount !== 0 && tower.internalCount % 30 === 0) {
                                 tower.sendBullet()
                         }
                 }
@@ -498,19 +527,24 @@ function towerIntervalStart() {
 
 }
 
-let count = 0
+function checkingAllEnemies() {
+        if (waveDuration !== 0 && allTowers[0].internalCount % 20 === 0) {
+                if (allEnemies.length === 0) {
+                        console.log("CheckingAllEnemies is executed")
+                        waveEnd()
+                }
+        }
+        return
+}
+
+
 // main game loop
 let gameLoop = setInterval(() => {
         renderGameObjects()
         towerIntervalStart()
         afterCollision();
+        checkingAllEnemies()
 }, 200)
-
-
-window.onload = function () {}
-
-
-/* ============= Archived ============= */
 
 
 
