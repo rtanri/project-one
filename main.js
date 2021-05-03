@@ -10,7 +10,9 @@ let level = 1
 let isStarting = false;
 let waveDuration = 0
 let gameScreen = document.getElementById("game-screen")
+let goldPanel = document.querySelector(".goldStatus")
 let goldValue = parseInt(document.getElementById("gold").innerText)
+let scoreValue = parseInt(document.getElementById("score").innerText)
 let selectedGround = document.getElementsByClassName("towerGround")
 
 
@@ -48,10 +50,20 @@ function editGold(num) {
         document.getElementById("gold").innerText = goldValue
 }
 
+
+function editScore(score) {
+        scoreValue = (scoreValue + score)
+        document.getElementById("score").innerText = scoreValue
+}
+
 function actionRejected(location, initialClass) {
         location.classList.replace(initialClass, "rejected")
         setTimeout(function () {
-                location.classList.remove("rejected")
+                if (initialClass === 'goldStatus') {
+                        location.classList.replace("rejected", initialClass)
+                } else {
+                        location.classList.remove("rejected")
+                }
         }, 200)
 }
 
@@ -67,6 +79,8 @@ function clearEventListener(className, callback) {
 
 function buildSmallTower() {
         clearEventListener("towerGround", constructBigTower)
+        clearEventListener("towerGround", demolish)
+
         for (const square of selectedGround) {
                 square.classList.add("activedOne")
                 square.addEventListener("click", constructSmallTower)
@@ -75,24 +89,36 @@ function buildSmallTower() {
 
 function constructSmallTower(e) {
         // tower coordinate in each div box
-        let xTower = e.target.offsetLeft + e.target.offsetWidth / 2
+        // let xTower = e.target.offsetLeft + e.target.offsetWidth / 2
+        let xTower = e.target.offsetLeft
         let yTower = e.target.offsetTop
 
         if (goldValue < 80) {
                 actionRejected(e.target, "activedOne")
+                actionRejected(goldPanel, "goldStatus")
                 for (const ground of selectedGround) {
                         ground.classList.remove("activedOne")
                 }
+
                 return console.log("Sorry, you need more gold")
         } else if (e.target.classList.contains("buildSmallTower") || e.target.classList.contains("buildBigTower")) {
                 // actionRejected(e.target, "buildSmallTower")
                 return console.log("Cannot build tower here")
         } else {
                 editGold(-80)
+                // *test changing way to create tower
                 e.target.classList.add("buildSmallTower")
 
                 let oneSmallTower = new SmallTower(xTower, yTower)
+                console.log(oneSmallTower.id)
+
                 allTowers.push(oneSmallTower)
+
+                //*test by appending DOMElement
+                // e.target.append(oneSmallTower.DOMElement)
+
+                e.target.setAttribute("id", oneSmallTower.id)
+
                 for (const ground of selectedGround) {
                         ground.classList.remove("activedOne")
                 }
@@ -102,6 +128,7 @@ function constructSmallTower(e) {
 
 function buildBigTower() {
         clearEventListener("towerGround", constructSmallTower)
+        clearEventListener("towerGround", demolish)
         for (const square of selectedGround) {
                 square.classList.add("activedTwo")
                 square.addEventListener("click", constructBigTower)
@@ -115,10 +142,12 @@ function constructBigTower(e) {
 
         if (goldValue < 200) {
                 actionRejected(e.target, "activedTwo")
+                actionRejected(goldPanel, "goldStatus")
                 for (const ground of selectedGround) {
                         ground.classList.remove("activedTwo")
                 }
                 return console.log("Sorry, you need more gold")
+
         } else if (e.target.classList.contains("buildSmallTower") || e.target.classList.contains("buildBigTower")) {
                 return console.log("Cannot build tower here")
         } else {
@@ -134,6 +163,7 @@ function constructBigTower(e) {
         }
 }
 
+
 function deleteTower() {
         clearEventListener("towerGround", constructSmallTower)
         clearEventListener("towerGround", constructBigTower)
@@ -143,14 +173,52 @@ function deleteTower() {
         }
 }
 
+// cannot be used in demolish()
+// function returnTowerIndex(yourId) {
+//         const sameId = (tower) => tower.id === yourId
+//         let index = allTowers.findIndex(sameId)
+
+//         if (index === -1) {
+//                 console.log("Tower based on ID is not found")
+//                 return
+//         }
+//         return index
+// }
+
+// cannot be used in demolish()
+// function filterId(myId) {
+//         return allTowers.filter(tower => tower.id === myId)
+// }
+
+
+
 function demolish(e) {
+        console.log(e.target.id)
+
+
+        let indexMap = allTowers.map(x => {
+                return x.id
+        })
+        let indexNum = indexMap.indexOf(e.target.id)
+        console.log(`index map: ${indexMap}`)
+        console.log(`index number: ${indexNum}`)
+        console.log(`index number: ${typeof indexMap[0]}`)
+        // why my index map keep giving (-1) result, and end of deleting wrong tower
+
+        e.target.innerHTML = ""
         if (e.target.classList.contains("buildSmallTower")) {
                 e.target.setAttribute("class", "towerGround")
+                allTowers.splice(indexMap, 1)
                 editGold(+50)
+                e.target.removeAttribute("id")
+
                 console.log("Small tower is deleted")
+
         } else if (e.target.classList.contains("buildBigTower")) {
                 e.target.setAttribute("class", "towerGround")
+                allTowers.splice(indexMap, 1)
                 editGold(+110)
+                e.target.removeAttribute("id")
                 console.log("Big tower is deleted")
         }
         for (const square of selectedGround) {
@@ -253,6 +321,7 @@ class Enemy extends GameObject {
                         this.speed = 0
                         removeFromArray(allEnemies, this.DOMElement, this.id)
                         editGold(-50)
+                        editScore(-100)
                 }
         }
 
@@ -306,7 +375,7 @@ class Boss extends Enemy {
                 if (this.x <= -50) {
                         this.speed = 0
                         removeFromArray(allEnemies, this.DOMElement, this.id)
-                        editGold(-200)
+                        editScore(-500)
                 }
         }
 
@@ -447,6 +516,7 @@ function afterCollision() {
                                 if (enemy.health === 0) {
                                         removeFromArray(allEnemies, enemy.DOMElement, enemy.id)
                                         editGold(50)
+                                        editScore(100)
                                 }
                         }
                 }
@@ -554,7 +624,7 @@ function checkingAllEnemies() {
 
 function gameEnd() {
         if (level === 4) {
-                console.log("Congrats you win the game!")
+                console.log(`Congrats you win the game!, with score: ${scoreValue}`)
         } else {
                 console.log("You finish this level, prepare for next level")
         }
@@ -577,21 +647,3 @@ let gameLoop = setInterval(() => {
 
 
 /* ========== Archived ========== */
-
-// function pause() {
-//         for (const enemy of allEnemies) {
-//                 enemy.speed = 0;
-//         }
-//         for (const bullet of allBullets) {
-//                 bullet.speed = 0;
-//         }
-// }
-
-// function start() {
-//         for (const enemy of allEnemies) {
-//                 enemy.speed = 10;
-//         }
-//         for (const bullet of allBullets) {
-//                 bullet.speed = 10;
-//         }
-// }

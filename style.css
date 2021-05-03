@@ -2,14 +2,37 @@ body{
         min-width: 750px;
 }
 
+h1{
+        text-align: center;
+}
+/* ========== Game Display CSS ========== */
+
 #main-window{
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
         margin: 30px auto;
+        flex-wrap: nowrap;
+        justify-content: center;
 }
 
-/* ========== Game Display CSS ========== */
+#need-to-protect{
+        width: 200px;
+        height: 290px;
+        background-color: #5aa897;
+        margin-left: 0;
+        margin-right: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+}
+
+
+#enemy-goal{
+        width: 150px;
+        height: 150px;
+}
 
 #game-screen{
         background:url(./assets/background.png) ;
@@ -18,10 +41,9 @@ body{
         width: 700px;
         height: 300px;
 
-        margin: 10px auto;
+        margin: 10px 0;
         padding-top: 10px;
         position: relative;
-
 }
 
 #flex-screen{
@@ -129,7 +151,7 @@ body{
 
 #button-list{
         margin: 30px auto;
-        max-width: 700px;
+        max-width: 900px;
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -140,7 +162,7 @@ body{
         font-size: 24px;
         font-weight: 400;
         font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-        margin-left: 100px;
+        margin-left: 40px;
 }
 
 .towerButton{
