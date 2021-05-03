@@ -1,9 +1,18 @@
 # Project One: 2D Tower Defense Game
 
+[Click for Live Demo](https://dreamy-edison-d56176.netlify.app/)
+
 Inspired by "Plant vs Zombie" where some enemies spawned from the right side walking to the left direction.
 
 Game Objective:
-Player need to defeat all enemies and protect their safe zone (left side) by building 2 type of auto-attacking towers.
+Player build towers to send job interviews to Job Applicants. Everyone have to get a job!
+
+# How to Play
+
+1. Build companies (SMEs or Global company) with your gold
+1. Pressed "Wave Start" button to welcome job applicants
+1. Companies will automaticly invite them for interviews
+1. Beware: Boss Fight at level-3
 
 
 # Project Progress
@@ -30,3 +39,5 @@ Player need to defeat all enemies and protect their safe zone (left side) by bui
 
 1. Fighting against Boss - with huge health, at 3rd level
 ![background](./assets/readme/boss-fight.jpg)
+
+1. Create game-start-modal, game-end-modal, and interacting audio effects.
