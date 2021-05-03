@@ -12,6 +12,7 @@ h1{
         font-weight: 700;
         font-size: 40px;
 }
+
 /* ========== Game Display CSS ========== */
 
 #main-window{
@@ -181,7 +182,7 @@ h1{
 .towerButton{
         padding: 0 10px;
         cursor: pointer;
-        font-size: 20px;
+        font-size: 18px;
         margin-right: 20px;
         height: 50px;
         box-shadow: 10px;
@@ -190,6 +191,8 @@ h1{
         box-shadow: 0 5px #999;
         border-radius: 10px;
         outline: none;
+        display: flex;
+        align-items: center;
 }
 
 
@@ -209,6 +212,7 @@ h1{
 
 #delete-tower-button{
         background-color: #d8ac9c;
+        padding-left: 0px;
 }
 
 #delete-tower-button:active{
@@ -219,6 +223,7 @@ h1{
 .smallIcon{
         height: 30px;
         width: 30px;
+        margin-left: 10px;
 }
 
 
@@ -270,23 +275,38 @@ h1{
 }
 
 
-/* Dimension */
+/* Modal */
 
-/* 
+.modal {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+        left: 0;
+        opacity: 1;
+	background: #5aa897;
+        display: none;
+}
 
-GameScreen
-width: 700px;
-height: 310px;
-each-row: 100px;
-
-1. Enemy 
-width: 44px;
-height: 80px;
-
-2. Bullet
-width: 40px;
-height: 30px;
-
-
-
-*/
+.modal.show {
+        display: block;
+}
+    
+.modalContent {
+        position: relative;
+        width: 500px;
+        margin: 10% auto;
+        padding: 10px 50px 50px 50px;
+        background-color: #eaeaea;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+}
+    
+.modalImage{
+        width: 80px;
+        height: 80px;
+        margin-left: 40px;
+}

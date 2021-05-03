@@ -11,7 +11,7 @@
         <div id="main-window">
                 
                 <div id="need-to-protect"> 
-                        <p style="text-align: center; font-size: 26px; margin-top: 0;">Appeal to Gahmen</p>
+                        <p style="text-align: center; font-size: 26px; margin-top: 0;">Protest to Gahmen</p>
                         <img id="enemy-goal" src="./assets/government.png">
 
                 </div>
@@ -43,15 +43,36 @@
         <div id="button-list">
                 <button type="button" id="delete-tower-button" class='towerButton' onclick="deleteTower()"><img src="./assets/demolition.png" class="smallIcon"/></button>
 
-                <button type="button" id="first-tower-button" class='towerButton' onclick="buildSmallTower()">Tower 1</button>
+                <button type="button" id="first-tower-button" class='towerButton' onclick="buildSmallTower()">SMEs
+                <img class="smallIcon" src="./assets/sme.png">
+                </button>
                 
-                <button type="button" id="second-tower-button" class='towerButton' onclick="buildBigTower()">Tower 2 </button>
+                <button type="button" id="second-tower-button" class='towerButton' onclick="buildBigTower()">Global
+                <img class="smallIcon" src="./assets/international.png">
+                </button>
 
                 <button type="button" id="send-enemy" class='towerButton' onclick="gameStart()">Wave Start</button>
 
                 <p class="statusBoard" id="gold-status">Gold:  <span id="gold">1000</span></p>
                 <p class="statusBoard" id="score-status">Score:  <span id="score">0</span></p>
         </div>
+
+        <div id='introModal' class='modal show'>
+                <div class='modalContent'>
+                    <h1>Job Hunter Game</h1>   
+                        <h2 style="margin: 0 auto;">Give Everyone Their Desired Job</h2>
+                        <div id="button-list">
+                                <img  src="./assets/bullet.png">
+                                <img  src="./assets/bullet.png">
+                                <img  src="./assets/bullet.png">
+                                <img  src="./assets/bullet.png">
+                                <img class="modalImage" src="./assets/fast-forward.png">
+                                <img class="modalImage" src="./assets/confused.png">
+                        </div>
+                    <button id='startButton' class="towerButton" onclick="startGame()">Start Game</button>
+                </div>
+        </div>
+
         <script src='./main.js' ></script>
 </body>
 </html>

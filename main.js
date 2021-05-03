@@ -94,6 +94,18 @@ function keyPress(e) {
         })
 }
 
+function buildTowerAudio() {
+        audio = new Audio("./assets/music/build-tower.mp3")
+        audio.volume = 0.5
+        audio.play()
+}
+
+function protestAudio() {
+        audio = new Audio("./assets/music/protest.mp3")
+        audio.volume = 0.2
+        audio.play()
+}
+
 function buildSmallTower() {
         clearEventListener("towerGround", constructBigTower)
         clearEventListener("towerGround", demolish)
@@ -122,6 +134,7 @@ function constructSmallTower(e) {
                 // actionRejected(e.target, "buildSmallTower")
                 return console.log("Cannot build tower here")
         } else {
+                buildTowerAudio()
                 editGold(-80)
                 // *test changing way to create tower
                 e.target.classList.add("buildSmallTower")
@@ -169,6 +182,7 @@ function constructBigTower(e) {
         } else if (e.target.classList.contains("buildSmallTower") || e.target.classList.contains("buildBigTower")) {
                 return console.log("Cannot build tower here")
         } else {
+                buildTowerAudio()
                 editGold(-200)
                 e.target.classList.add("buildBigTower")
 
@@ -224,6 +238,7 @@ function demolish(e) {
         // why my index map keep giving (-1) result, and end of deleting wrong tower
 
         e.target.innerHTML = ""
+        buildToAudio()
         if (e.target.classList.contains("buildSmallTower")) {
                 e.target.setAttribute("class", "towerGround")
                 allTowers.splice(indexMap, 1)
@@ -340,6 +355,7 @@ class Enemy extends GameObject {
                         removeFromArray(allEnemies, this.DOMElement, this.id)
                         editGold(-50)
                         editScore(-100)
+                        protestAudio()
                 }
         }
 
@@ -528,6 +544,9 @@ function afterCollision() {
                 for (const bullet of allBullets) {
                         if (enemy.collide(bullet) === true) {
                                 enemy.takeDamage(bullet)
+                                audio = new Audio("./assets/music/got-hit.mp3")
+                                audio.volume = 0.6
+                                audio.play()
                                 // console.log(enemy.health)
                                 removeFromArray(allBullets, bullet.DOMElement, bullet.id)
 
@@ -535,6 +554,9 @@ function afterCollision() {
                                         removeFromArray(allEnemies, enemy.DOMElement, enemy.id)
                                         editGold(50)
                                         editScore(100)
+                                        cashAudio = new Audio("./assets/music/cash.mp3")
+                                        cashAudio.volume = 0.3
+                                        cashAudio.play()
                                 }
                         }
                 }
@@ -648,13 +670,18 @@ function gameEnd() {
         }
 }
 
+
+// musicPlay()
 // main game loop
 let gameLoop = setInterval(() => {
+        // musicPlay()
         renderGameObjects()
         towerIntervalStart()
         afterCollision();
         checkingAllEnemies()
 }, 200)
+
+
 
 
 
@@ -664,4 +691,19 @@ let gameLoop = setInterval(() => {
 // 2. myMove() reference from: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_animate_3
 
 
-/* ========== Archived ========== */
+/* ========== Modal ========== */
+
+
+function musicPlay() {
+        backgroundMusic = new Audio("./assets/music/game-ost.mp3")
+        backgroundMusic.volume = 0.5
+        // backgroundMusic.loop = true
+        backgroundMusic.play()
+}
+
+
+const getStarted = document.getElementById("startButton");
+getStarted.onclick = function () {
+        document.getElementById('introModal').classList.remove("show");
+        musicPlay()
+};
