@@ -17,6 +17,20 @@ let selectedGround = document.getElementsByClassName("towerGround")
 
 
 /* ======== Global Reusable Functions ======== */
+function restart() {
+        goldValue = 1000
+        document.getElementById("gold").innerText = goldValue
+
+        scoreValue = 0
+        document.getElementById("score").innerText = scoreValue
+
+        level = 1
+
+        allTowers.splice(0, allTowers.length)
+        for (const ground of selectedGround) {
+                ground.setAttribute("class", "towerGround")
+        }
+}
 
 const randomValue = (inputArray) => {
         return inputArray[Math.floor(Math.random() * inputArray.length)]
@@ -238,7 +252,7 @@ function demolish(e) {
         // why my index map keep giving (-1) result, and end of deleting wrong tower
 
         e.target.innerHTML = ""
-        buildToAudio()
+        buildTowerAudio()
         if (e.target.classList.contains("buildSmallTower")) {
                 e.target.setAttribute("class", "towerGround")
                 allTowers.splice(indexMap, 1)
@@ -570,9 +584,9 @@ function summonEnemy(limit, type, speed) {
         let jobHunter;
         var interval = setInterval(() => {
                 if (type === Boss) {
-                        jobHunter = new type(700, speed)
+                        jobHunter = new type(650, speed)
                 } else {
-                        jobHunter = new type(700, randomValue(yCoordinate), speed)
+                        jobHunter = new type(650, randomValue(yCoordinate), speed)
                 }
                 allEnemies.push(jobHunter)
                 allEnemies.forEach(enemy => gameScreen.append(enemy.DOMElement))
@@ -665,14 +679,18 @@ function checkingAllEnemies() {
 function gameEnd() {
         if (level === 4) {
                 console.log(`Congrats you win the game!, with score: ${scoreValue}`)
+                level = 1
+                musicPause()
+                document.getElementById('gameEndModal').classList.add("show");
         } else {
                 console.log("You finish this level, prepare for next level")
+                for (const bullet of allBullets) {
+                        console.log("try removing all bullets")
+                        removeFromArray(allBullets, bullet.DOMElement, bullet.id)
+                }
         }
 }
 
-
-// musicPlay()
-// main game loop
 let gameLoop = setInterval(() => {
         // musicPlay()
         renderGameObjects()
@@ -693,12 +711,16 @@ let gameLoop = setInterval(() => {
 
 /* ========== Modal ========== */
 
+const backgroundMusic = new Audio("./assets/music/game-ost.mp3")
 
 function musicPlay() {
-        backgroundMusic = new Audio("./assets/music/game-ost.mp3")
         backgroundMusic.volume = 0.5
-        // backgroundMusic.loop = true
+        backgroundMusic.loop = true
         backgroundMusic.play()
+}
+
+function musicPause() {
+        backgroundMusic.pause()
 }
 
 
@@ -706,4 +728,11 @@ const getStarted = document.getElementById("startButton");
 getStarted.onclick = function () {
         document.getElementById('introModal').classList.remove("show");
         musicPlay()
+};
+
+const restartGame = document.getElementById("restartButton");
+restartGame.onclick = function () {
+        document.getElementById('gameEndModal').classList.remove("show");
+        musicPlay()
+        restart()
 };

@@ -7,7 +7,7 @@
         <title>Document</title>
 </head>
 <body>
-        <h1>JOB  HUNTER</h1>
+        <h1>JOB  HUNTERS</h1>
         <div id="main-window">
                 
                 <div id="need-to-protect"> 
@@ -17,9 +17,9 @@
                 </div>
                 <div id="game-screen">
                         <div id="flex-screen">
-                                <div class="towerGround" id="first-col-top"></div>
-                                <div class="towerGround" id="first-col-mid"></div>
-                                <div class="towerGround" id="first-col-down"></div>
+                                <div class="towerGround"></div>
+                                <div class="towerGround"></div>
+                                <div class="towerGround"></div>
                                 <div class="towerGround"></div>
                                 <div class="towerGround"></div>
                                 <div class="towerGround"></div>
@@ -59,7 +59,7 @@
 
         <div id='introModal' class='modal show'>
                 <div class='modalContent'>
-                    <h1>Job Hunter Game</h1>   
+                    <h1>Job Hunters Game</h1>   
                         <h2 style="margin: 0 auto;">Give Everyone Their Desired Job</h2>
                         <div id="button-list">
                                 <img  src="./assets/bullet.png">
@@ -69,7 +69,15 @@
                                 <img class="modalImage" src="./assets/fast-forward.png">
                                 <img class="modalImage" src="./assets/confused.png">
                         </div>
-                    <button id='startButton' class="towerButton" onclick="startGame()">Start Game</button>
+                    <button id="startButton" class="towerButton" onclick="startGame()">Start Game</button>
+                </div>
+        </div>
+
+        <div id='gameEndModal' class='modal'>
+                <div class='modalContent'>
+                    <h2>Game Over</h2>
+                    <p>Your score is: <span id="score">0</span></p> 
+                    <button id="restartButton" class="towerButton" onclick="startGame()">Restart Game</button>
                 </div>
         </div>
 
