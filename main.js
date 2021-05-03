@@ -10,7 +10,7 @@ let level = 1
 let isStarting = false;
 let waveDuration = 0
 let gameScreen = document.getElementById("game-screen")
-let goldPanel = document.querySelector(".goldStatus")
+let goldPanel = document.querySelector(".statusBoard")
 let goldValue = parseInt(document.getElementById("gold").innerText)
 let scoreValue = parseInt(document.getElementById("score").innerText)
 let selectedGround = document.getElementsByClassName("towerGround")
@@ -59,7 +59,7 @@ function editScore(score) {
 function actionRejected(location, initialClass) {
         location.classList.replace(initialClass, "rejected")
         setTimeout(function () {
-                if (initialClass === 'goldStatus') {
+                if (initialClass === 'statusBoard') {
                         location.classList.replace("rejected", initialClass)
                 } else {
                         location.classList.remove("rejected")
@@ -77,14 +77,31 @@ function clearEventListener(className, callback) {
         }
 }
 
+
+function keyPress(e) {
+        document.addEventListener("keydown", (e) => {
+                if (e.keyCode === 27) {
+                        console.log("Escape is pressed")
+                        clearEventListener("towerGround", constructBigTower)
+                        clearEventListener("towerGround", constructSmallTower)
+                        clearEventListener("towerGround", demolish)
+                        for (const square of selectedGround) {
+                                square.classList.remove("activedOne")
+                                square.classList.remove("activedTwo")
+                                square.classList.remove("demolishTower")
+                        }
+                }
+        })
+}
+
 function buildSmallTower() {
         clearEventListener("towerGround", constructBigTower)
         clearEventListener("towerGround", demolish)
-
         for (const square of selectedGround) {
                 square.classList.add("activedOne")
                 square.addEventListener("click", constructSmallTower)
         }
+        keyPress()
 }
 
 function constructSmallTower(e) {
@@ -95,7 +112,7 @@ function constructSmallTower(e) {
 
         if (goldValue < 80) {
                 actionRejected(e.target, "activedOne")
-                actionRejected(goldPanel, "goldStatus")
+                actionRejected(goldPanel, "statusBoard")
                 for (const ground of selectedGround) {
                         ground.classList.remove("activedOne")
                 }
@@ -133,6 +150,7 @@ function buildBigTower() {
                 square.classList.add("activedTwo")
                 square.addEventListener("click", constructBigTower)
         }
+        keyPress()
 }
 
 function constructBigTower(e) {
@@ -142,7 +160,7 @@ function constructBigTower(e) {
 
         if (goldValue < 200) {
                 actionRejected(e.target, "activedTwo")
-                actionRejected(goldPanel, "goldStatus")
+                actionRejected(goldPanel, "statusBoard")
                 for (const ground of selectedGround) {
                         ground.classList.remove("activedTwo")
                 }

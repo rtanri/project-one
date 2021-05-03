@@ -1,9 +1,16 @@
 body{
         min-width: 750px;
+        font-family: 'Libre Baskerville', serif;
+        padding-top: 30px;
+        padding-left: 15%;
+        padding-right: 15%;
 }
 
 h1{
         text-align: center;
+        font-family: 'Libre Baskerville', serif;
+        font-weight: 700;
+        font-size: 40px;
 }
 /* ========== Game Display CSS ========== */
 
@@ -120,8 +127,6 @@ h1{
 
 
 
-
-
 /* Tower and bullet */
 .bulletDisplay{
         height: 25px;
@@ -158,7 +163,15 @@ h1{
         align-items: center;
 }
 
-#status-board{
+
+#gold-status{
+        font-size: 24px;
+        font-weight: 400;
+        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        margin-left: 40px;
+}
+
+#score-status{
         font-size: 24px;
         font-weight: 400;
         font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
