@@ -108,17 +108,7 @@ function keyPress(e) {
         })
 }
 
-function buildTowerAudio() {
-        audio = new Audio("./assets/music/build-tower.mp3")
-        audio.volume = 0.5
-        audio.play()
-}
 
-function protestAudio() {
-        audio = new Audio("./assets/music/protest.mp3")
-        audio.volume = 0.2
-        audio.play()
-}
 
 function buildSmallTower() {
         clearEventListener("towerGround", constructBigTower)
@@ -131,9 +121,8 @@ function buildSmallTower() {
 }
 
 function constructSmallTower(e) {
-        // tower coordinate in each div box
-        // let xTower = e.target.offsetLeft + e.target.offsetWidth / 2
-        let xTower = e.target.offsetLeft
+        // tower and bullet coordinate in each div box
+        let xTower = e.target.offsetLeft + e.target.offsetWidth / 2
         let yTower = e.target.offsetTop
 
         if (goldValue < 80) {
@@ -150,16 +139,12 @@ function constructSmallTower(e) {
         } else {
                 buildTowerAudio()
                 editGold(-80)
-                // *test changing way to create tower
                 e.target.classList.add("buildSmallTower")
 
                 let oneSmallTower = new SmallTower(xTower, yTower)
-                console.log(oneSmallTower.id)
+                // console.log(oneSmallTower.id)
 
                 allTowers.push(oneSmallTower)
-
-                //*test by appending DOMElement
-                // e.target.append(oneSmallTower.DOMElement)
 
                 e.target.setAttribute("id", oneSmallTower.id)
 
@@ -200,8 +185,12 @@ function constructBigTower(e) {
                 editGold(-200)
                 e.target.classList.add("buildBigTower")
 
-                let tower = new BigTower(xTower, yTower)
-                allTowers.push(tower)
+                let oneBigTower = new BigTower(xTower, yTower)
+                e.target.setAttribute("id", oneBigTower.id)
+                console.log(oneBigTower.id)
+
+                allTowers.push(oneBigTower)
+
                 for (const ground of selectedGround) {
                         ground.classList.remove("activedTwo")
                 }
@@ -213,57 +202,34 @@ function constructBigTower(e) {
 function deleteTower() {
         clearEventListener("towerGround", constructSmallTower)
         clearEventListener("towerGround", constructBigTower)
+        clearEventListener("towerGround", demolish)
         for (const square of selectedGround) {
                 square.classList.add("demolishTower")
                 square.addEventListener("click", demolish)
         }
 }
 
-// cannot be used in demolish()
-// function returnTowerIndex(yourId) {
-//         const sameId = (tower) => tower.id === yourId
-//         let index = allTowers.findIndex(sameId)
-
-//         if (index === -1) {
-//                 console.log("Tower based on ID is not found")
-//                 return
-//         }
-//         return index
-// }
-
-// cannot be used in demolish()
-// function filterId(myId) {
-//         return allTowers.filter(tower => tower.id === myId)
-// }
-
-
-
 function demolish(e) {
-        console.log(e.target.id)
-
+        console.log(e.target.id) // type = string
 
         let indexMap = allTowers.map(x => {
                 return x.id
         })
-        let indexNum = indexMap.indexOf(e.target.id)
-        console.log(`index map: ${indexMap}`)
-        console.log(`index number: ${indexNum}`)
-        console.log(`index number: ${typeof indexMap[0]}`)
-        // why my index map keep giving (-1) result, and end of deleting wrong tower
+        let indexNum = indexMap.indexOf(Number(e.target.id)) //find Index of Array based on ID: indexOf(number)
 
-        e.target.innerHTML = ""
+        e.target.innerHTML = "" // remove DOM
         buildTowerAudio()
         if (e.target.classList.contains("buildSmallTower")) {
                 e.target.setAttribute("class", "towerGround")
-                allTowers.splice(indexMap, 1)
+                allTowers.splice(indexNum, 1) // remove from parentArray, typo indexMap -> indexNum
                 editGold(+50)
                 e.target.removeAttribute("id")
-
+                // console.log(`index map: ${allTowers.map(tower => tower.id)}`)
                 console.log("Small tower is deleted")
 
         } else if (e.target.classList.contains("buildBigTower")) {
                 e.target.setAttribute("class", "towerGround")
-                allTowers.splice(indexMap, 1)
+                allTowers.splice(indexNum, 1)
                 editGold(+110)
                 e.target.removeAttribute("id")
                 console.log("Big tower is deleted")
@@ -272,6 +238,7 @@ function demolish(e) {
                 square.classList.remove("demolishTower")
         }
 }
+
 
 /* ======== Object Class: GameObject, Enemy, Tower, Bullets ======== */
 
@@ -344,8 +311,6 @@ class GameObject {
                 return this.DOMElement.id
         }
 }
-
-
 
 class Enemy extends GameObject {
         speed;
@@ -723,16 +688,28 @@ function musicPause() {
         backgroundMusic.pause()
 }
 
+function buildTowerAudio() {
+        audio = new Audio("./assets/music/build-tower.mp3")
+        audio.volume = 0.5
+        audio.play()
+}
+
+function protestAudio() {
+        audio = new Audio("./assets/music/protest.mp3")
+        audio.volume = 0.1
+        audio.play()
+}
+
 
 const getStarted = document.getElementById("startButton");
 getStarted.onclick = function () {
         document.getElementById('introModal').classList.remove("show");
-        musicPlay()
+        // musicPlay()
 };
 
 const restartGame = document.getElementById("restartButton");
 restartGame.onclick = function () {
         document.getElementById('gameEndModal').classList.remove("show");
-        musicPlay()
+        // musicPlay()
         restart()
 };
