@@ -18,6 +18,7 @@ let selectedGround = document.getElementsByClassName("towerGround")
 
 /* ======== Global Reusable Functions ======== */
 function restart() {
+        console.log("restart game is executed")
         goldValue = 1000
         document.getElementById("gold").innerText = goldValue
 
@@ -26,11 +27,42 @@ function restart() {
 
         level = 1
 
+        createMessage(messagePanel, "Build 2 or more companies with your gold >> ")
+        let createButton = document.createElement("button")
+        createButton.setAttribute("id", "ready-to-start")
+        createButton.setAttribute("class", "towerButton")
+        createButton.innerText = "Done!"
+        messagePanel.append(createButton)
+        setReadyButton()
+
         allTowers.splice(0, allTowers.length)
         for (const ground of selectedGround) {
                 ground.setAttribute("class", "towerGround")
         }
 }
+
+const disabledBtn = (id) => {
+        let button = document.getElementById(id)
+
+        if (button.classList.contains("blocked")) {
+                button.classList.remove("blocked")
+                button.disabled = false
+                return
+        }
+
+        button.disabled = true
+        button.classList.add("blocked")
+}
+
+const showInstruction = () => {
+        let infoBox = document.querySelector(".instruction")
+        if (infoBox.classList.contains("show")) {
+                infoBox.classList.remove("show")
+                return
+        }
+        infoBox.classList.add("show")
+}
+
 
 const randomValue = (inputArray) => {
         return inputArray[Math.floor(Math.random() * inputArray.length)]
@@ -96,6 +128,7 @@ function keyPress(e) {
         document.addEventListener("keydown", (e) => {
                 if (e.keyCode === 27) {
                         console.log("Escape is pressed")
+                        showInstruction()
                         clearEventListener("towerGround", constructBigTower)
                         clearEventListener("towerGround", constructSmallTower)
                         clearEventListener("towerGround", demolish)
@@ -117,6 +150,7 @@ function buildSmallTower() {
                 square.classList.add("activedOne")
                 square.addEventListener("click", constructSmallTower)
         }
+        showInstruction()
         keyPress()
 }
 
@@ -124,7 +158,7 @@ function constructSmallTower(e) {
         // tower and bullet coordinate in each div box
         let xTower = e.target.offsetLeft + e.target.offsetWidth / 2
         let yTower = e.target.offsetTop
-
+        showInstruction()
         if (goldValue < 80) {
                 actionRejected(e.target, "activedOne")
                 actionRejected(goldPanel, "statusBoard")
@@ -162,10 +196,12 @@ function buildBigTower() {
                 square.classList.add("activedTwo")
                 square.addEventListener("click", constructBigTower)
         }
+        showInstruction()
         keyPress()
 }
 
 function constructBigTower(e) {
+        showInstruction()
         // tower coordinate in each div box
         let xTower = e.target.offsetLeft + e.target.offsetWidth / 2
         let yTower = e.target.offsetTop
@@ -207,9 +243,12 @@ function deleteTower() {
                 square.classList.add("demolishTower")
                 square.addEventListener("click", demolish)
         }
+        showInstruction()
+        keyPress()
 }
 
 function demolish(e) {
+        showInstruction()
         console.log(e.target.id) // type = string
 
         let indexMap = allTowers.map(x => {
@@ -372,7 +411,7 @@ class Enemy extends GameObject {
 }
 
 class Boss extends Enemy {
-        health = 200
+        health = 400
         className = "boss-char"
         sprite = "./assets/confused-man.png"
 
@@ -561,7 +600,7 @@ function summonEnemy(limit, type, speed) {
                 if (enemyCount === limit) {
                         clearInterval(interval)
                 }
-        }, 3000);
+        }, 2000);
         enemyCount = 0;
 }
 
@@ -570,14 +609,16 @@ function sendEnemy() {
                 console.log(`Level ${level} - Prepare for Incoming Job Hunters`)
 
                 if (level === 1) {
-                        // summonEnemy(1, Boss, 2)
-                        summonEnemy(5, Enemy, 5)
+                        createMessage(messagePanel, "Wave #1 - Send interviews to all confused applicants")
+                        summonEnemy(5, Enemy, 2)
                         level += 1
                 } else if (level === 2) {
-                        summonEnemy(15, Enemy, 5)
+                        createMessage(messagePanel, "Wave #2 - It's end-of-year, more applicants are applying job")
+                        summonEnemy(15, Enemy, 2)
                         level += 1
                 } else if (level === 3) {
-                        summonEnemy(1, Boss, 2)
+                        createMessage(messagePanel, "Wave #3 - BossFight: Help director get his dream job!")
+                        summonEnemy(1, Boss, 1)
                         level += 1
                 }
         }
@@ -586,6 +627,7 @@ function sendEnemy() {
 // waveEnd() need to be executed once allEnemies = []
 function waveEnd() {
         console.log("waveEnd executed")
+        createMessage(messagePanel, "Great job, everyone have a job")
         isStarting = false
         waveDuration = 0;
         for (const tower of allTowers) {
@@ -597,6 +639,7 @@ function waveEnd() {
 
 function gameStart() {
         console.log("Game Start")
+        disabledBtn("send-enemy")
         waveDuration += 1
         for (const tower of allTowers) {
                 tower.internalCount = 0
@@ -622,8 +665,8 @@ function renderGameObjects() {
 function towerIntervalStart() {
         if (isStarting === true) {
                 for (const tower of allTowers) {
-                        // console.log(tower.internalCount)
-                        if (tower.internalCount !== 0 && tower.internalCount % 30 === 0) {
+                        console.log(tower.internalCount)
+                        if (tower.internalCount !== 0 && tower.internalCount % 80 === 0) {
                                 tower.sendBullet()
                         }
                 }
@@ -632,7 +675,7 @@ function towerIntervalStart() {
 }
 
 function checkingAllEnemies() {
-        if (waveDuration !== 0 && allTowers[0].internalCount % 20 === 0) {
+        if (waveDuration !== 0 && allTowers[0].internalCount % 40 === 0) {
                 if (allEnemies.length === 0) {
                         console.log("CheckingAllEnemies is executed")
                         waveEnd()
@@ -643,36 +686,19 @@ function checkingAllEnemies() {
 
 function gameEnd() {
         if (level === 4) {
-                console.log(`Congrats you win the game!, with score: ${scoreValue}`)
+                createMessage(messagePanel, "Congrats you win the game!")
                 level = 1
                 musicPause()
-                document.getElementById('gameEndModal').classList.add("show");
+                document.getElementById("result").innerText = scoreValue
+                setTimeout(function () {
+                        document.getElementById('gameEndModal').classList.add("show");
+                }, 2000)
+
         } else {
-                console.log("You finish this level, prepare for next level")
-                for (const bullet of allBullets) {
-                        console.log("try removing all bullets")
-                        removeFromArray(allBullets, bullet.DOMElement, bullet.id)
-                }
+                createMessage(messagePanel, "Build more companies to prepare next incoming wave")
         }
+        disabledBtn("send-enemy")
 }
-
-let gameLoop = setInterval(() => {
-        // musicPlay()
-        renderGameObjects()
-        towerIntervalStart()
-        afterCollision();
-        checkingAllEnemies()
-}, 200)
-
-
-
-
-
-/* ========== Resources ========== */
-
-// 1. Mentor Min Shan give great recommendation on choosing either in DOM JS or Canvas. I decided in DOM
-// 2. myMove() reference from: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_animate_3
-
 
 /* ========== Modal ========== */
 
@@ -703,13 +729,71 @@ function protestAudio() {
 
 const getStarted = document.getElementById("startButton");
 getStarted.onclick = function () {
+        disabledBtn("send-enemy")
         document.getElementById('introModal').classList.remove("show");
-        // musicPlay()
+        musicPlay()
 };
 
 const restartGame = document.getElementById("restartButton");
 restartGame.onclick = function () {
+        disabledBtn("send-enemy")
         document.getElementById('gameEndModal').classList.remove("show");
-        // musicPlay()
+        musicPlay()
         restart()
 };
+
+const createMessage = (location, message) => {
+        location.innerHTML = ""
+        let showMessage = document.createElement("span")
+        showMessage.innerText = message
+        return location.append(showMessage)
+}
+
+const messagePanel = document.getElementById("message-bar")
+
+function setReadyButton() {
+        const readyButton = document.getElementById("ready-to-start");
+        readyButton.onclick = function () {
+                if (allTowers.length < 2) {
+                        actionRejected(messagePanel, "fixed")
+                        return
+                }
+                disabledBtn("send-enemy")
+                createMessage(messagePanel, "Pressed 'Wave Start' button to welcome wave of applicants")
+        };
+}
+setReadyButton()
+
+function actionRejected(location, initialClass) {
+        if (location === messagePanel) {
+                location.classList.add("shake")
+                setTimeout(function () {
+                        location.classList.remove("shake")
+                }, 700)
+                return
+        }
+        location.classList.replace(initialClass, "rejected")
+        setTimeout(function () {
+                if (initialClass === 'statusBoard') {
+                        location.classList.replace("rejected", initialClass)
+                } else {
+                        location.classList.remove("rejected")
+                }
+        }, 200)
+}
+
+/* ========== Main Game Loop ========== */
+
+let gameLoop = setInterval(() => {
+        // musicPlay()
+        renderGameObjects()
+        towerIntervalStart()
+        afterCollision();
+        checkingAllEnemies()
+}, 100)
+
+
+/* ========== Resources ========== */
+
+// 1. Mentor Min Shan give great recommendation on choosing either in DOM JS or Canvas. I decided in DOM
+// 2. myMove() reference from: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_animate_3

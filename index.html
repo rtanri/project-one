@@ -9,21 +9,22 @@
 <body>
         <h1>JOB  HUNTERS</h1>
 
-        <div id="message-bar" class="typewriter">
-                <!-- <p>Build your towers, and click "Wave Start" to welcome applicants</p> -->
-                <!-- <p>Wave 1 - Send interviews to all confused applicants</p> -->
-                <p>Wave 2 - Send interviews to all clueless-job-applicants</p>
-                <!-- <p>Wave 3 - Clueless Director want to get desired job</p> -->
-                <!-- <p>Thanks to you, Director got a job again</p> -->
+        <div id="message-bar" class="fixed">
+                <span>Build 2 or more companies with your gold >> </span><button id="ready-to-start" class="towerButton">Done!</button>
         </div>
 
         <div id="main-window">
 
                 <div id="need-to-protect"> 
+                        <div class="instruction"> 
+                                <p style="text-align: center;font-size: 20px;margin-top: 0;line-height: 1.5;">Press 'esc' key to cancel</p>
+                        </div>
                         <p style="text-align: center; font-size: 26px; margin-top: 0;">Protest to Gahmen</p>
                         <img id="enemy-goal" src="./assets/government.png">
-
                 </div>
+
+
+
                 <div id="game-screen">
                         <div id="flex-screen">
                                 <div class="towerGround"></div>
@@ -50,7 +51,7 @@
 
 
         
-        <div id="button-list">
+        <div class="buttonList">
                 <button type="button" id="delete-tower-button" class='towerButton' onclick="deleteTower()"><img src="./assets/demolition.png" class="smallIcon"/></button>
 
                 <button type="button" id="first-tower-button" class='towerButton' onclick="buildSmallTower()">SMEs
@@ -61,7 +62,7 @@
                 <img class="smallIcon" src="./assets/international.png">
                 </button>
 
-                <button type="button" id="send-enemy" class='towerButton' onclick="gameStart()">Wave Start</button>
+                <button type="button" id="send-enemy" class='towerButton sendEnemyBtn' onclick="gameStart()">Wave Start</button>
 
                 <p class="statusBoard" id="gold-status">Gold:  <span id="gold">1000</span></p>
                 <p class="statusBoard" id="score-status">Score:  <span id="score">0</span></p>
@@ -70,8 +71,8 @@
         <div id='introModal' class='modal show'>
                 <div class='modalContent'>
                     <h1>Job Hunters Game</h1>   
-                        <h2 style="margin: 0 auto;">Give Everyone Their Desired Job</h2>
-                        <div id="button-list">
+                        <h2 style="margin: 0 auto 30px auto;">Give Everyone Their Desired Job</h2>
+                        <div class="buttonList">
                                 <img  src="./assets/bullet.png">
                                 <img  src="./assets/bullet.png">
                                 <img  src="./assets/bullet.png">
@@ -85,8 +86,8 @@
 
         <div id='gameEndModal' class='modal'>
                 <div class='modalContent'>
-                    <h2>Game Over</h2>
-                    <p>Your score is: <span id="score">0</span></p> 
+                    <h2 class="modalTitle">Game Over</h2>
+                    <p style="font-size: 28px;">Your score is: <span id="result">0</span></p> 
                     <button id="restartButton" class="towerButton" onclick="startGame()">Restart Game</button>
                 </div>
         </div>
