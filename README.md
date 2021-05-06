@@ -1,11 +1,11 @@
-# Project One: 2D Tower Defense Game
+# Project One: Job Hunters
 
 [Click for Live Demo](https://dreamy-edison-d56176.netlify.app/)
 
-Inspired by "Plant vs Zombie" where some enemies spawned from the right side walking to the left direction.
+Inspired by "Plant vs Zombie", this game help all job applicants that come from everywhere to get their dream job from either SMEs or Global companies.
 
 Game Objective:
-Player build towers to send job interviews to Job Applicants. Everyone have to get a job!
+Player build company to send job interviews to Job Applicants. Everyone have to get a job!
 
 # How to Play
 
