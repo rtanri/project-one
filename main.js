@@ -136,8 +136,9 @@ function escape(e) {
                         square.classList.remove("activedTwo")
                         square.classList.remove("demolishTower")
                 }
+                escKeyPress(false)
         }
-        escKeyPress(false)
+
 }
 
 function unblockedButton() {
@@ -281,14 +282,14 @@ function demolish(e) {
         if (e.target.classList.contains("buildSmallTower")) {
                 e.target.setAttribute("class", "towerGround")
                 allTowers.splice(indexNum, 1) // remove from parentArray, typo indexMap -> indexNum
-                editGold(+50)
+                editGold(+40)
                 e.target.removeAttribute("id")
                 console.log("Small tower is deleted")
 
         } else if (e.target.classList.contains("buildBigTower")) {
                 e.target.setAttribute("class", "towerGround")
                 allTowers.splice(indexNum, 1)
-                editGold(+110)
+                editGold(+100)
                 e.target.removeAttribute("id")
                 console.log("Big tower is deleted")
         }
@@ -384,6 +385,10 @@ class Enemy extends GameObject {
                 super("./assets/confused.png", x, y)
                 this.speed = speed;
                 this.DOMElement.setAttribute("class", this.className)
+        }
+
+        died() {
+
         }
 
         move() {
@@ -487,7 +492,7 @@ class UpDiagonalBullet extends Bullet {
                 this.y -= this.speed / 6
                 this.DOMElement.style.left = this.x + "px"
                 this.DOMElement.style.top = this.y + "px"
-                if (this.x >= 700 || this.y < 0) {
+                if (this.x >= 700 || this.y < -30) {
                         removeFromArray(allBullets, this.DOMElement, this.id)
                 }
         }
@@ -536,7 +541,7 @@ class SmallTower extends GameObject {
 
 
         sendBullet() {
-                let interview = new Bullet(this.x, this.y, 10)
+                let interview = new Bullet(this.x, this.y, 12)
                 allBullets.push(interview)
                 allBullets.forEach(bullet => gameScreen.append(bullet.DOMElement))
         }
@@ -564,9 +569,9 @@ class BigTower extends GameObject {
         }
 
         sendBullet() {
-                let interview = new Bullet(this.x, this.y, 10)
-                let interview2 = new UpDiagonalBullet(this.x, this.y, 10)
-                let interview3 = new DownDiagonalBullet(this.x, this.y, 10)
+                let interview = new Bullet(this.x, this.y, 12)
+                let interview2 = new UpDiagonalBullet(this.x, this.y, 12)
+                let interview3 = new DownDiagonalBullet(this.x, this.y, 12)
                 allBullets.push(interview)
                 allBullets.push(interview2)
                 allBullets.push(interview3)
@@ -619,7 +624,7 @@ function summonEnemy(limit, type, speed) {
                 if (enemyCount === limit) {
                         clearInterval(interval)
                 }
-        }, 2000);
+        }, 3000);
         enemyCount = 0;
 }
 

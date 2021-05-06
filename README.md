@@ -9,35 +9,30 @@ Player build towers to send job interviews to Job Applicants. Everyone have to g
 
 # How to Play
 
-1. Build companies (SMEs or Global company) with your gold
+1. Build companies (SMEs is 50 Gold, and Global is 200 Gold), then press "Done"
 1. Pressed "Wave Start" button to welcome job applicants
-1. Companies will automaticly invite them for interviews
+1. Companies will automaticly send job interviews
+1. Demolish a tower will get 50% of cost
 1. Beware: Boss Fight at level-3
 
 
-# Project Progress
+# Project Features
 
-1. Create Initial Game Screen & Try summoning enemy from various spots in different interval
-![background](./assets/readme/test-spawningAndMoving-enemy.jpg)
-
-1. Do Major Change: Adding 'GameObject' class as a fundamental of other objects (Tower, Bullets, Enemy). Set some get dimension() to help in calculating collision
+1. Used 'GameObject' class as a fundamental of other objects (Tower, Bullets, Enemy). Set some get dimension() to help in calculating collision
 ![background](./assets/readme/getter.jpg)
+
+1. Set unique id for each 'GameObject' to help calling their index when we want to edit/remove from main arrays
 
 1. Test the enemy damage taken on bullets from different directions
 ![background](./assets/readme/testing-collision-diff-angle.jpg)
 
-1. Tag SmallTower with 1-bullet-shot, and BigTower with 3-bullets-shot
-![background](./assets/readme/tag-bullet-to-tower-type.jpg)
 
-1. Set unique id for each 'GameObject' to help calling their index when we want to remove from main arrays
-
-1. Test whole collision, removing enemies & bullets from array, and add +50 gold for each enemy died
-![background](./assets/readme/addGold-and-remove-enemy-from-allEnemies.jpg)
-
-1. Add the tower by clicking the button, followed by clicking the desired location. Enemy will appear in random rows and different quantity in each levels
+1. Add a tower by clicking the button followed by grayed-ground. SMEs shoot 1-bullet, meanwhile Global shoot 3-bullets.
 ![background](./assets/readme/build-by-clicking.jpg)
+
+1. Enemy spawns in random rows with bullet-collisions-receptors from various directions. Enemy will generate +50 gold and +100 score
+![background](./assets/readme/enemy-spawn-randomly.jpg)
+
 
 1. Fighting against Boss - with huge health, at 3rd level
 ![background](./assets/readme/boss-fight.jpg)
-
-1. Create game-start-modal, game-end-modal, and interacting audio effects.
