@@ -14,12 +14,13 @@ let goldPanel = document.querySelector(".statusBoard")
 let goldValue = parseInt(document.getElementById("gold").innerText)
 let scoreValue = parseInt(document.getElementById("score").innerText)
 let selectedGround = document.getElementsByClassName("towerGround")
+let isEscActivated = false
 
 
 /* ======== Global Reusable Functions ======== */
 function restart() {
         console.log("restart game is executed")
-        goldValue = 1000
+        goldValue = 600
         document.getElementById("gold").innerText = goldValue
 
         scoreValue = 0
@@ -27,13 +28,7 @@ function restart() {
 
         level = 1
 
-        createMessage(messagePanel, "Build 2 or more companies with your gold >> ")
-        let createButton = document.createElement("button")
-        createButton.setAttribute("id", "ready-to-start")
-        createButton.setAttribute("class", "towerButton")
-        createButton.innerText = "Done!"
-        messagePanel.append(createButton)
-        setReadyButton()
+        createReadyButton()
 
         allTowers.splice(0, allTowers.length)
         for (const ground of selectedGround) {
@@ -52,15 +47,6 @@ const disabledBtn = (id) => {
 
         button.disabled = true
         button.classList.add("blocked")
-}
-
-const showInstruction = () => {
-        let infoBox = document.querySelector(".instruction")
-        if (infoBox.classList.contains("show")) {
-                infoBox.classList.remove("show")
-                return
-        }
-        infoBox.classList.add("show")
 }
 
 
@@ -123,86 +109,114 @@ function clearEventListener(className, callback) {
         }
 }
 
+function escKeyPress(boolean) {
+        let infoBox = document.querySelector(".instruction")
+        if (boolean === true) {
+                document.addEventListener("keydown", escape)
+                console.log("add escape key press")
+                infoBox.classList.add("show")
 
-function keyPress(e) {
-        document.addEventListener("keydown", (e) => {
-                if (e.keyCode === 27) {
-                        console.log("Escape is pressed")
-                        showInstruction()
-                        clearEventListener("towerGround", constructBigTower)
-                        clearEventListener("towerGround", constructSmallTower)
-                        clearEventListener("towerGround", demolish)
-                        for (const square of selectedGround) {
-                                square.classList.remove("activedOne")
-                                square.classList.remove("activedTwo")
-                                square.classList.remove("demolishTower")
-                        }
-                }
-        })
+        } else if (boolean === false) {
+                document.removeEventListener("keydown", escape)
+                console.log("remove escape key press")
+                infoBox.classList.remove("show")
+        }
+
 }
 
+function escape(e) {
+        if (e.keyCode === 27) {
+                console.log("Escape is pressed")
+                unblockedButton()
+                clearEventListener("towerGround", constructBigTower)
+                clearEventListener("towerGround", constructSmallTower)
+                clearEventListener("towerGround", demolish)
+                for (const square of selectedGround) {
+                        square.classList.remove("activedOne")
+                        square.classList.remove("activedTwo")
+                        square.classList.remove("demolishTower")
+                }
+        }
+        escKeyPress(false)
+}
 
+function unblockedButton() {
+        let blockedButton = document.querySelector(".blocked")
+
+        if (blockedButton.id !== "send-enemy") {
+                blockedButton.disabled = false
+                blockedButton.classList.remove("blocked")
+        }
+
+}
 
 function buildSmallTower() {
         clearEventListener("towerGround", constructBigTower)
         clearEventListener("towerGround", demolish)
+        document.removeEventListener("keydown", escape)
+        unblockedButton()
+
+        disabledBtn("first-tower-button")
+
         for (const square of selectedGround) {
+                square.classList.remove("activedTwo")
+                square.classList.remove("demolishTower")
                 square.classList.add("activedOne")
                 square.addEventListener("click", constructSmallTower)
         }
-        showInstruction()
-        keyPress()
+        escKeyPress(true)
 }
 
 function constructSmallTower(e) {
-        // tower and bullet coordinate in each div box
         let xTower = e.target.offsetLeft + e.target.offsetWidth / 2
         let yTower = e.target.offsetTop
-        showInstruction()
+
         if (goldValue < 80) {
                 actionRejected(e.target, "activedOne")
                 actionRejected(goldPanel, "statusBoard")
                 for (const ground of selectedGround) {
                         ground.classList.remove("activedOne")
                 }
-
-                return console.log("Sorry, you need more gold")
+                console.log("Sorry, you need more gold")
         } else if (e.target.classList.contains("buildSmallTower") || e.target.classList.contains("buildBigTower")) {
-                // actionRejected(e.target, "buildSmallTower")
-                return console.log("Cannot build tower here")
+                console.log("Cannot build tower here")
         } else {
                 buildTowerAudio()
                 editGold(-80)
                 e.target.classList.add("buildSmallTower")
-
                 let oneSmallTower = new SmallTower(xTower, yTower)
-                // console.log(oneSmallTower.id)
-
                 allTowers.push(oneSmallTower)
-
                 e.target.setAttribute("id", oneSmallTower.id)
 
                 for (const ground of selectedGround) {
                         ground.classList.remove("activedOne")
                 }
-                return console.log("Building small tower")
+                escKeyPress(false)
+                disabledBtn("first-tower-button")
+                console.log("Building small tower")
         }
+
 }
 
 function buildBigTower() {
         clearEventListener("towerGround", constructSmallTower)
         clearEventListener("towerGround", demolish)
+
+        document.removeEventListener("keydown", escape)
+        unblockedButton()
+
+        disabledBtn("second-tower-button")
+
         for (const square of selectedGround) {
+                square.classList.remove("activedOne")
+                square.classList.remove("demolishTower")
                 square.classList.add("activedTwo")
                 square.addEventListener("click", constructBigTower)
         }
-        showInstruction()
-        keyPress()
+        escKeyPress(true)
 }
 
 function constructBigTower(e) {
-        showInstruction()
-        // tower coordinate in each div box
         let xTower = e.target.offsetLeft + e.target.offsetWidth / 2
         let yTower = e.target.offsetTop
 
@@ -212,10 +226,10 @@ function constructBigTower(e) {
                 for (const ground of selectedGround) {
                         ground.classList.remove("activedTwo")
                 }
-                return console.log("Sorry, you need more gold")
+                console.log("Sorry, you need more gold")
 
         } else if (e.target.classList.contains("buildSmallTower") || e.target.classList.contains("buildBigTower")) {
-                return console.log("Cannot build tower here")
+                console.log("Cannot build tower here")
         } else {
                 buildTowerAudio()
                 editGold(-200)
@@ -230,7 +244,9 @@ function constructBigTower(e) {
                 for (const ground of selectedGround) {
                         ground.classList.remove("activedTwo")
                 }
-                return console.log("Building big tower")
+                escKeyPress(false)
+                disabledBtn("second-tower-button")
+                console.log("Building big tower")
         }
 }
 
@@ -239,22 +255,26 @@ function deleteTower() {
         clearEventListener("towerGround", constructSmallTower)
         clearEventListener("towerGround", constructBigTower)
         clearEventListener("towerGround", demolish)
+        unblockedButton()
+        disabledBtn("delete-tower-button")
+        document.removeEventListener("keydown", escape)
         for (const square of selectedGround) {
+                square.classList.remove("activedTwo")
+                square.classList.remove("activedOne")
                 square.classList.add("demolishTower")
                 square.addEventListener("click", demolish)
         }
-        showInstruction()
-        keyPress()
+        escKeyPress(true)
 }
 
 function demolish(e) {
-        showInstruction()
         console.log(e.target.id) // type = string
 
         let indexMap = allTowers.map(x => {
                 return x.id
         })
-        let indexNum = indexMap.indexOf(Number(e.target.id)) //find Index of Array based on ID: indexOf(number)
+        let indexNum = indexMap.indexOf(Number(e.target.id))
+        //find Index of Array based on ID: indexOf(number)
 
         e.target.innerHTML = "" // remove DOM
         buildTowerAudio()
@@ -263,7 +283,6 @@ function demolish(e) {
                 allTowers.splice(indexNum, 1) // remove from parentArray, typo indexMap -> indexNum
                 editGold(+50)
                 e.target.removeAttribute("id")
-                // console.log(`index map: ${allTowers.map(tower => tower.id)}`)
                 console.log("Small tower is deleted")
 
         } else if (e.target.classList.contains("buildBigTower")) {
@@ -273,6 +292,8 @@ function demolish(e) {
                 e.target.removeAttribute("id")
                 console.log("Big tower is deleted")
         }
+        disabledBtn("delete-tower-button")
+        escKeyPress(false)
         for (const square of selectedGround) {
                 square.classList.remove("demolishTower")
         }
@@ -528,7 +549,6 @@ class BigTower extends GameObject {
         isCounting = true
 
         constructor(x, y) {
-                // to pull the constructor from parents
                 super("./assets/international.png", x, y)
                 this.DOMElement.setAttribute("class", this.className)
         }
@@ -554,7 +574,6 @@ class BigTower extends GameObject {
 
         }
 }
-
 
 // collide in between Enemy and bullet
 function afterCollision() {
@@ -688,16 +707,16 @@ function gameEnd() {
         if (level === 4) {
                 createMessage(messagePanel, "Congrats you win the game!")
                 level = 1
-                musicPause()
                 document.getElementById("result").innerText = scoreValue
                 setTimeout(function () {
                         document.getElementById('gameEndModal').classList.add("show");
-                }, 2000)
+                        musicPause()
+                }, 3000)
 
         } else {
-                createMessage(messagePanel, "Build more companies to prepare next incoming wave")
+                createMessage(messagePanel, "Build more companies with your gold >> ")
+                createReadyButton()
         }
-        disabledBtn("send-enemy")
 }
 
 /* ========== Modal ========== */
@@ -730,6 +749,7 @@ function protestAudio() {
 const getStarted = document.getElementById("startButton");
 getStarted.onclick = function () {
         disabledBtn("send-enemy")
+        createReadyButton()
         document.getElementById('introModal').classList.remove("show");
         musicPlay()
 };
@@ -751,9 +771,15 @@ const createMessage = (location, message) => {
 
 const messagePanel = document.getElementById("message-bar")
 
-function setReadyButton() {
-        const readyButton = document.getElementById("ready-to-start");
-        readyButton.onclick = function () {
+function createReadyButton() {
+        createMessage(messagePanel, "Build 2 or more companies with your gold >> ")
+        let createButton = document.createElement("button")
+        createButton.setAttribute("id", "ready-to-start")
+        createButton.setAttribute("class", "towerButton")
+        createButton.innerText = "Done!"
+        messagePanel.append(createButton)
+
+        createButton.onclick = function () {
                 if (allTowers.length < 2) {
                         actionRejected(messagePanel, "fixed")
                         return
@@ -762,7 +788,7 @@ function setReadyButton() {
                 createMessage(messagePanel, "Pressed 'Wave Start' button to welcome wave of applicants")
         };
 }
-setReadyButton()
+
 
 function actionRejected(location, initialClass) {
         if (location === messagePanel) {
