@@ -349,7 +349,7 @@ h1{
 .modalContent {
         position: relative;
         width: 600px;
-        margin: 10% auto;
+        margin: 50px auto 50px auto;
         padding: 10px 50px 50px 50px;
         background-color: #eaeaea;
         border-radius: 15px;
