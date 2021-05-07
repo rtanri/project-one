@@ -88,16 +88,12 @@ function editScore(score) {
         document.getElementById("score").innerText = scoreValue
 }
 
-function actionRejected(location, initialClass) {
-        location.classList.replace(initialClass, "rejected")
-        setTimeout(function () {
-                if (initialClass === 'statusBoard') {
-                        location.classList.replace("rejected", initialClass)
-                } else {
-                        location.classList.remove("rejected")
-                }
-        }, 200)
-}
+// function actionRejected(location, initialClass) {
+//         location.classList.replace(initialClass, "rejected")
+//         setTimeout(function () {
+//                 location.classList.replace("rejected", initialClass)
+//         }, 200)
+// }
 
 /* ======== Build and Demolish Towers ======== */
 
@@ -175,10 +171,8 @@ function constructSmallTower(e) {
         if (goldValue < 80) {
                 actionRejected(e.target, "activedOne")
                 actionRejected(goldPanel, "statusBoard")
-                for (const ground of selectedGround) {
-                        ground.classList.remove("activedOne")
-                }
                 console.log("Sorry, you need more gold")
+
         } else if (e.target.classList.contains("buildSmallTower") || e.target.classList.contains("buildBigTower")) {
                 console.log("Cannot build tower here")
         } else {
@@ -224,9 +218,6 @@ function constructBigTower(e) {
         if (goldValue < 200) {
                 actionRejected(e.target, "activedTwo")
                 actionRejected(goldPanel, "statusBoard")
-                for (const ground of selectedGround) {
-                        ground.classList.remove("activedTwo")
-                }
                 console.log("Sorry, you need more gold")
 
         } else if (e.target.classList.contains("buildSmallTower") || e.target.classList.contains("buildBigTower")) {
@@ -376,7 +367,7 @@ class GameObject {
 class Enemy extends GameObject {
         speed;
         intervalSpeed = 500;
-        health = 20
+        health = 10
         className = "enemy-char"
 
 
@@ -437,7 +428,7 @@ class Enemy extends GameObject {
 }
 
 class Boss extends Enemy {
-        health = 400
+        health = 200
         className = "boss-char"
         sprite = "./assets/confused-man.png"
 
@@ -624,7 +615,7 @@ function summonEnemy(limit, type, speed) {
                 if (enemyCount === limit) {
                         clearInterval(interval)
                 }
-        }, 3000);
+        }, 2000);
         enemyCount = 0;
 }
 
@@ -634,15 +625,15 @@ function sendEnemy() {
 
                 if (level === 1) {
                         createMessage(messagePanel, "Wave #1 - Send interviews to all confused applicants")
-                        summonEnemy(5, Enemy, 2)
+                        summonEnemy(7, Enemy, 4)
                         level += 1
                 } else if (level === 2) {
                         createMessage(messagePanel, "Wave #2 - It's end-of-year, more applicants are applying job")
-                        summonEnemy(15, Enemy, 2)
+                        summonEnemy(15, Enemy, 4)
                         level += 1
                 } else if (level === 3) {
                         createMessage(messagePanel, "Wave #3 - BossFight: Help director get his dream job!")
-                        summonEnemy(1, Boss, 1)
+                        summonEnemy(1, Boss, 2)
                         level += 1
                 }
         }
@@ -805,11 +796,7 @@ function actionRejected(location, initialClass) {
         }
         location.classList.replace(initialClass, "rejected")
         setTimeout(function () {
-                if (initialClass === 'statusBoard') {
-                        location.classList.replace("rejected", initialClass)
-                } else {
-                        location.classList.remove("rejected")
-                }
+                location.classList.replace("rejected", initialClass)
         }, 200)
 }
 

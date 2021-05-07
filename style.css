@@ -15,6 +15,7 @@ h1{
 }
 
 
+
 /* ========== Game Display CSS ========== */
 
 #main-window{
@@ -328,13 +329,26 @@ h1{
         display: none;
 }
 
+.modalInstruction {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        margin-bottom: 20px;
+}
+
+.instruction-item {
+        width: 200px;
+        border: 3px black solid;
+}
+
 .modal.show {
         display: block;
 }
     
 .modalContent {
         position: relative;
-        width: 500px;
+        width: 600px;
         margin: 10% auto;
         padding: 10px 50px 50px 50px;
         background-color: #eaeaea;
