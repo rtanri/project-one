@@ -706,7 +706,7 @@ function gameEnd() {
                 document.getElementById("result").innerText = scoreValue
                 setTimeout(function () {
                         document.getElementById('gameEndModal').classList.add("show");
-                        musicPause()
+                        // musicPause()
                 }, 3000)
 
         } else {
@@ -747,14 +747,14 @@ getStarted.onclick = function () {
         disabledBtn("send-enemy")
         createReadyButton()
         document.getElementById('introModal').classList.remove("show");
-        musicPlay()
+        // musicPlay()
 };
 
 const restartGame = document.getElementById("restartButton");
 restartGame.onclick = function () {
         disabledBtn("send-enemy")
         document.getElementById('gameEndModal').classList.remove("show");
-        musicPlay()
+        // musicPlay()
         restart()
 };
 
